@@ -1,9 +1,13 @@
-float depth = 1000;
-int plateSize = 500;
+//speed and rotation
+float rotateX = 0;
+float rotateZ = 0;
 float speed = 1;
+//previous mouse position
+float prevMouseX = mouseX;
+float prevMouseY = mouseY;
 
 void settings() {
-  size(500, 500, P3D);
+  size(800, 800, P3D);
 }
 
 void setup() {
@@ -11,32 +15,47 @@ void setup() {
 }
 
 void draw() {
-  camera(width/2, 0, depth, 250, 250, 0, 0, 1, 0);
+  //set camera and light position and direction
+  camera(width/2, 0, 500, 400, 400, 0, 0, 1, 0);
   directionalLight(50, 100, 125, 0, 1, 0);
   ambientLight(102, 102, 102);
-  background(200);
-  translate(width/2, height/2, 0);
-  float rz = map(mouseX, 0, height, -PI/3 * speed, PI/3 * speed);
-  float rx = map(mouseY, 0, width, PI/3 * speed, -PI/3 * speed);
-  rz = map(rz, 0, height, -PI/3, PI/3);
-  rx = map(rx, 0, width, PI/3, -PI/3);
-  rotateZ(rz);
-  rotateX(rx);
+  background(200, 200, 200);
+  // movements
+  translate(width / 2, height / 2, 0);
+  rotateX(rotateX);
+  rotateZ(rotateZ);
+  //draw box
   fill(0, 255, 0);
-  box(plateSize, 10, plateSize);
+  box(400, 10, 400);
 }
 
-void keyPressed() {
-  if (key == CODED) {
-    if (keyCode == UP) {
-      depth -= 50;
-    } else if (keyCode == DOWN) {
-      depth += 50;
-    }
+void mouseDragged() {
+  float pi3 = PI / 3;
+  
+  if (prevMouseX > mouseX && rotateZ >= -pi3) {
+    rotateZ -= max((PI / 60) * speed, -pi3);
+  } else if (prevMouseX < mouseX && rotateZ <= pi3) {
+    rotateZ += min((PI / 60) * speed, pi3);
   }
+  prevMouseX = mouseX;
+  
+  if (prevMouseY < mouseY && rotateX >= -pi3) {
+    rotateX -= max((PI / 60) * speed, -pi3);
+  } else if (prevMouseY > mouseY && rotateX <= pi3) {
+    rotateX += min((PI / 60) * speed, pi3);
+  }
+  prevMouseY = mouseY;
 }
 
 void mouseWheel(MouseEvent event) {
   float e = event.getCount();
-  speed = e*100;
+  float x = (e < 0) ? speed * 1.1 : speed * 0.9;
+  speed = clamp(x, 0.2, 1.5);
+}
+
+//clamp constraints value to a minimum and maximum value
+float clamp(float value, float min, float max) {
+  if (value > max) return max;
+  else if (value < min) return min;
+  else return value;
 }
