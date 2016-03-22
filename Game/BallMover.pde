@@ -3,7 +3,6 @@ class BallMover {
   PVector velocity;
   PVector gravity;
   int ballRadius;
-  float gravityConstant = 1.1;
 
   BallMover() {
     ballRadius = 15;
@@ -16,39 +15,33 @@ class BallMover {
     gravity.x = sin(rotateZ) * gravityConstant;
     gravity.z = -sin(rotateX) * gravityConstant;
   
-  velocity.add(gravity);
+    velocity.add(gravity);
     velocity.add(friction());
-    checkEdges();
     location.add(velocity);
+    
+    checkEdges();
   }
   
-  void checkEdges() {
-    /*if ((location.x >= board.boardSizeX / 2) || (location.x <= -board.boardSizeX / 2)) {
-      velocity.x = velocity.x * -1;
-      sound.play();
-      */
+  void checkEdges() {      
       if (location.x > board.boardSizeX / 2) {
         location.x = board.boardSizeX / 2;
         velocity.x = velocity.x * -1;
+        sound.play();
       } else if (location.x < -board.boardSizeX / 2) {
         location.x = -board.boardSizeX / 2;
         velocity.x = velocity.x * -1;
+        sound.play();
       }
-    /*  
-    }
-    if ((location.z >= board.boardSizeZ / 2) || (location.z <= -board.boardSizeZ / 2)) {
-      velocity.z = velocity.z * -1;
-      sound.play();
-      */
+      
       if (location.z > board.boardSizeZ / 2) {
         location.z = board.boardSizeZ / 2;
         velocity.z = velocity.z * -1;
+        sound.play();
       } else if (location.z < -board.boardSizeZ / 2) {
         location.z = -board.boardSizeZ / 2;
         velocity.z = velocity.z * -1;
+        sound.play();
       }
-      
-    //}
   }
 
   void display() {
@@ -62,7 +55,7 @@ class BallMover {
 
   PVector friction() {
     float normalForce = 1;
-    float mu = 1;
+    float mu = 0.6;
     float frictionMagnitude = normalForce * mu;
     PVector friction = velocity.get();
     friction.mult(-1);
