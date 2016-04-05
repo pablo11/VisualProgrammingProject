@@ -19,12 +19,21 @@ class Board {
     boardColor = color(0, 255, 0);
   }
 
-  void display() {
+  void display(boolean mooving) {
+    noStroke();
     translate(width / 2, height / 2, 0);
-    rotateX(rotateX);
-    rotateZ(rotateZ);
+    if (mooving) {
+      rotateX(rotateX);
+      rotateZ(rotateZ);
+    } else {
+      //apply inverse rotation that one applied to camera
+      float a = atan((float) (width/2) / (width/2 + 100));
+      rotateX(a - PI/2);
+      rotateZ(0);
+    }
     fill(boardColor);
     box(boardSizeX, boardSizeY, boardSizeZ);
+    translate(0, -board.boardSizeY / 2, 0);
   }
 
   //board movements

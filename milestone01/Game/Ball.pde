@@ -1,10 +1,10 @@
-class BallMover {
+class Ball {
   PVector location;
   PVector velocity;
   PVector gravity;
   int ballRadius;
 
-  BallMover() {
+  Ball() {
     ballRadius = 15;
     location = new PVector(0, 0, 0);
     velocity = new PVector(0, 0, 0);
@@ -13,6 +13,7 @@ class BallMover {
 
   void update() {
     gravity.x = sin(rotateZ) * gravityConstant;
+    gravity.y = 0;
     gravity.z = -sin(rotateX) * gravityConstant;
   
     velocity.add(gravity);
@@ -45,9 +46,10 @@ class BallMover {
   }
 
   void display() {
+    noStroke();
     fill(255, 255, 255);
     pushMatrix();
-    translate(location.x, -(ballRadius + board.boardSizeY / 2), location.z);
+    translate(location.x, -ballRadius, location.z);
     sphere(ballRadius);
     popMatrix();
     update();
@@ -55,7 +57,7 @@ class BallMover {
 
   PVector friction() {
     float normalForce = 1;
-    float mu = 0.6;
+    float mu = 0.2;
     float frictionMagnitude = normalForce * mu;
     PVector friction = velocity.get();
     friction.mult(-1);
