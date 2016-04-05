@@ -24,27 +24,38 @@ class Ball {
     checkCylinderCollision();
   }
 
-  void checkEdges() {      
+  void checkEdges() {
     if (position.x > board.boardSizeX / 2) {
       position.x = board.boardSizeX / 2;
       velocity.x = velocity.x * -1;
-      sound.play();
+      
+      playSound(abs(velocity.x));
     } else if (position.x < -board.boardSizeX / 2) {
       position.x = -board.boardSizeX / 2;
       velocity.x = velocity.x * -1;
-      sound.play();
+      
+      playSound(abs(velocity.x));
     }
 
     if (position.z > board.boardSizeZ / 2) {
       position.z = board.boardSizeZ / 2;
       velocity.z = velocity.z * -1;
-      sound.play();
+      
+      playSound(abs(velocity.z));
     } else if (position.z < -board.boardSizeZ / 2) {
       position.z = -board.boardSizeZ / 2;
       velocity.z = velocity.z * -1;
-      //if velocity to small don't pay sound
-      sound.play();
+      
+      playSound(abs(velocity.z));
     }
+  }
+  
+  //if velocity to small don't pay sound
+  void playSound(float condition) {
+    float soundTreshold = 2;
+    if (condition > soundTreshold) {
+        sound.play();
+      }
   }
 
   void display() {
@@ -68,17 +79,13 @@ class Ball {
   }
 
   void checkCylinderCollision() {
-    float collisionTreshold = 10;
+    float collisionTreshold = 0.001;
     float collision = ballRadius + cylinder.radius;
     for (PVector cylPos : cylinderPositions) {
-      float distX = position.x - cylPos.x;
-      if (abs(distX) - collision < collisionTreshold) {
-        float distY = position.y - cylPos.y;
-        if (abs(distY) - collision < collisionTreshold) {
-          PVector n = new PVector(distX, distY);
-          n.normalize();
-          velocity = velocity.sub(n.mult((velocity.dot(n))).mult(2));
-        }
+      if (distanceBtwPoints(position, cylPos) - collision < collisionTreshold) {
+        PVector n = new PVector(position.x - cylPos.x, 0, position.z - cylPos.z);
+        n.normalize();
+        velocity = velocity.sub(n.mult(velocity.dot(n)*2));
       }
     }
   }

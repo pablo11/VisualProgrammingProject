@@ -34,6 +34,9 @@ void draw() {
   directionalLight(50, 100, 125, 0, 1, 0);
   ambientLight(102, 102, 102);
   background(200, 200, 200);
+  
+  translate(0, -board.boardSizeY / 2, 0);
+  
   mode.display();
 }
 

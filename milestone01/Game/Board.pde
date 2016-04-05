@@ -26,7 +26,7 @@ class Board {
       rotateX(rotateX);
       rotateZ(rotateZ);
     } else {
-      //apply inverse rotation that one applied to camera
+      //apply inverse rotation to the one applied to camera
       float a = atan((float) (width/2) / (width/2 + 100));
       rotateX(a - PI/2);
       rotateZ(0);
@@ -54,7 +54,7 @@ class Board {
     prevMouseY = mouseY;
   }
 
-  //change speed (min: 0.2, max: 1.5
+  //change speed (min: 0.2, max: 1.5)
   void changeSpeed(MouseEvent e) {
     float wheelValue = e.getCount();
     float x = (wheelValue < 0) ? speed * 1.1 : speed * 0.9;

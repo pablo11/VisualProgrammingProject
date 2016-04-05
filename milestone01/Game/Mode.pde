@@ -26,7 +26,7 @@ class PlayMode extends Mode {
     //draw all cylinders
     for (PVector position : cylinderPositions) {
       pushMatrix();
-      cylinder.display(position.x, position.y);
+      cylinder.display(position.x, position.z);
       popMatrix();
     }
   }
@@ -64,16 +64,17 @@ class PositionCylindersMode extends Mode {
     
     for (PVector position : cylinderPositions) {
       pushMatrix();
-      cylinder.display(position.x, position.y);
+      cylinder.display(position.x, position.z);
       popMatrix();
     }
+    
   }
 
   void mouseClicked() {
     pushMatrix();
     float x = clamp(mouseX - width / 2, -board.boardSizeX / 2 + cylinder.radius, board.boardSizeX / 2 - cylinder.radius);
     float z = clamp(mouseY - height / 2, -board.boardSizeZ / 2 + cylinder.radius, board.boardSizeZ / 2 - cylinder.radius);
-    cylinderPositions.add(new PVector(x, z));
+    cylinderPositions.add(new PVector(x, 0, z));
     popMatrix();
   }
   

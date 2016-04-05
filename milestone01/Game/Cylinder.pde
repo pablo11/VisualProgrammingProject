@@ -15,32 +15,30 @@ class Cylinder {
     float[] z = new float[resolution + 1];
 
     //get the x and y position on a circle for all the sides
-    for (int i = 0; i < x.length; i++) {
+    for (int i = 0; i < x.length; ++i) {
       angle = (TWO_PI / resolution) * i;
       x[i] = sin(angle) * r;
       z[i] = cos(angle) * r;
     }
 
-    border.beginShape(QUAD_STRIP);    
-    top.beginShape(QUAD_STRIP);
-    bottom.beginShape(QUAD_STRIP);
+    border.beginShape(QUAD_STRIP); 
+    top.beginShape();
+    bottom.beginShape();
 
     //draw the border, top and bottom of the cylinder
-    for (int i = 0; i < x.length; i++) {
+    for (int i = 0; i < x.length; ++i) {
       border.vertex(x[i], 0, z[i]);
       border.vertex(x[i], -h, z[i]);
             
-      top.vertex(0, -h, 0);
       top.vertex(x[i], -h, z[i]);
       
-      bottom.vertex(0, 0, 0);
       bottom.vertex(x[i], 0, z[i]);
     }
 
     border.endShape();
     top.endShape();
     bottom.endShape();
-    
+
     cil.addChild(border);
     cil.addChild(top);
     cil.addChild(bottom);
