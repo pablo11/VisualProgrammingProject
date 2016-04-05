@@ -42,7 +42,7 @@ void mouseDragged() {
 }
 
 void mouseWheel(MouseEvent event) {
-  board.changeSpeed(event);
+  mode.mouseWheel(event);
 }
 
 void keyPressed() {

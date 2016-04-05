@@ -1,9 +1,11 @@
 class Cylinder {
   PShape cil;
+  float radius;
 
   Cylinder(float r, float h, int resolution) {
     noStroke();
     cil = createShape(GROUP);
+    radius = r;
     PShape border = createShape();
     PShape top = createShape();
     PShape bottom = createShape();
@@ -45,7 +47,7 @@ class Cylinder {
   }
   
   void display(float x, float z) {
-    translate(x, 0, z);   
+    translate(x, -board.boardSizeY / 2, z);   
     shape(cil);
   }
 }

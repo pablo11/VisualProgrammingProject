@@ -7,6 +7,9 @@ abstract class Mode {
 
   void mouseClicked() {
   }
+  
+  void mouseWheel(MouseEvent event) {
+  }
 }
 
 class PlayMode extends Mode {
@@ -30,6 +33,10 @@ class PlayMode extends Mode {
 
   void mouseClicked() {
   }
+  
+  void mouseWheel(MouseEvent event) {
+    board.changeSpeed(event);
+  }
 }
 
 class PositionCylindersMode extends Mode {
@@ -46,7 +53,15 @@ class PositionCylindersMode extends Mode {
 
   void display() {
     board.display(false);
-        
+    
+    //piazzamento cilindri spostato dovuto al fatto che mouseX è preso a y=0
+    
+    pushMatrix();
+    float x = clamp(mouseX - width / 2, -board.boardSizeX / 2 + cylinder.radius, board.boardSizeX / 2 - cylinder.radius);
+    float z = clamp(mouseY - height / 2, -board.boardSizeZ / 2 + cylinder.radius, board.boardSizeZ / 2 - cylinder.radius);
+    cylinder.display(x, z);
+    popMatrix();
+    
     for (PVector position : cylinderPositions) {
       pushMatrix();
       cylinder.display(position.x, position.y);
@@ -56,9 +71,12 @@ class PositionCylindersMode extends Mode {
 
   void mouseClicked() {
     pushMatrix();
-    float x = mouseX - width/2;
-    float z = mouseY - height/2;
+    float x = clamp(mouseX - width / 2, -board.boardSizeX / 2 + cylinder.radius, board.boardSizeX / 2 - cylinder.radius);
+    float z = clamp(mouseY - height / 2, -board.boardSizeZ / 2 + cylinder.radius, board.boardSizeZ / 2 - cylinder.radius);
     cylinderPositions.add(new PVector(x, z));
     popMatrix();
+  }
+  
+  void mouseWheel(MouseEvent event) {
   }
 }

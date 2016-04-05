@@ -1,12 +1,12 @@
 class Ball {
-  PVector location;
+  PVector position;
   PVector velocity;
   PVector gravity;
-  int ballRadius;
+  float ballRadius;
 
   Ball() {
     ballRadius = 15;
-    location = new PVector(0, 0, 0);
+    position = new PVector(0, 0, 0);
     velocity = new PVector(0, 0, 0);
     gravity = new PVector(0, 1, 0);
   }
@@ -15,41 +15,43 @@ class Ball {
     gravity.x = sin(rotateZ) * gravityConstant;
     gravity.y = 0;
     gravity.z = -sin(rotateX) * gravityConstant;
-  
+
     velocity.add(gravity);
     velocity.add(friction());
-    location.add(velocity);
-    
+    position.add(velocity);
+
     checkEdges();
+    checkCylinderCollision();
   }
-  
+
   void checkEdges() {      
-      if (location.x > board.boardSizeX / 2) {
-        location.x = board.boardSizeX / 2;
-        velocity.x = velocity.x * -1;
-        sound.play();
-      } else if (location.x < -board.boardSizeX / 2) {
-        location.x = -board.boardSizeX / 2;
-        velocity.x = velocity.x * -1;
-        sound.play();
-      }
-      
-      if (location.z > board.boardSizeZ / 2) {
-        location.z = board.boardSizeZ / 2;
-        velocity.z = velocity.z * -1;
-        sound.play();
-      } else if (location.z < -board.boardSizeZ / 2) {
-        location.z = -board.boardSizeZ / 2;
-        velocity.z = velocity.z * -1;
-        sound.play();
-      }
+    if (position.x > board.boardSizeX / 2) {
+      position.x = board.boardSizeX / 2;
+      velocity.x = velocity.x * -1;
+      sound.play();
+    } else if (position.x < -board.boardSizeX / 2) {
+      position.x = -board.boardSizeX / 2;
+      velocity.x = velocity.x * -1;
+      sound.play();
+    }
+
+    if (position.z > board.boardSizeZ / 2) {
+      position.z = board.boardSizeZ / 2;
+      velocity.z = velocity.z * -1;
+      sound.play();
+    } else if (position.z < -board.boardSizeZ / 2) {
+      position.z = -board.boardSizeZ / 2;
+      velocity.z = velocity.z * -1;
+      //if velocity to small don't pay sound
+      sound.play();
+    }
   }
 
   void display() {
     noStroke();
     fill(255, 255, 255);
     pushMatrix();
-    translate(location.x, -ballRadius, location.z);
+    translate(position.x, -(ballRadius + board.boardSizeY / 2), position.z);
     sphere(ballRadius);
     popMatrix();
     update();
@@ -63,5 +65,21 @@ class Ball {
     friction.mult(-1);
     friction.normalize();
     return friction.mult(frictionMagnitude);
+  }
+
+  void checkCylinderCollision() {
+    float collisionTreshold = 10;
+    float collision = ballRadius + cylinder.radius;
+    for (PVector cylPos : cylinderPositions) {
+      float distX = position.x - cylPos.x;
+      if (abs(distX) - collision < collisionTreshold) {
+        float distY = position.y - cylPos.y;
+        if (abs(distY) - collision < collisionTreshold) {
+          PVector n = new PVector(distX, distY);
+          n.normalize();
+          velocity = velocity.sub(n.mult((velocity.dot(n))).mult(2));
+        }
+      }
+    }
   }
 }

@@ -33,7 +33,6 @@ class Board {
     }
     fill(boardColor);
     box(boardSizeX, boardSizeY, boardSizeZ);
-    translate(0, -board.boardSizeY / 2, 0);
   }
 
   //board movements
