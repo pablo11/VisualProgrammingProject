@@ -21,7 +21,7 @@ class Board {
 
   void display(boolean mooving) {
     noStroke();
-    translate(width / 2, height / 2, 0);
+    translate(width / 2, height / 2 , 0);
     if (mooving) {
       rotateX(rotateX);
       rotateZ(rotateZ);
@@ -37,14 +37,15 @@ class Board {
 
   //board movements
   void move() {
-    //rotation around x axis
+    /*
+    //rotation around z axis
     if (prevMouseX > mouseX && rotateZ >= -PI / 3) {
       rotateZ -= max((PI / 60) * speed, -PI / 3);
     } else if (prevMouseX < mouseX && rotateZ <= PI / 3) {
       rotateZ += min((PI / 60) * speed, PI / 3);
     }
     prevMouseX = mouseX;
-
+//*/
     //rotation around x axis
     if (prevMouseY < mouseY && rotateX >= -PI / 3) {
       rotateX -= max((PI / 60) * speed, -PI / 3);

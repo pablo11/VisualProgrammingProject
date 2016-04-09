@@ -1,15 +1,9 @@
 abstract class Mode {
-  Mode() {
-  }
+  void display() {}
 
-  void display() {
-  }
-
-  void mouseClicked() {
-  }
+  void mouseClicked() {}
   
-  void mouseWheel(MouseEvent event) {
-  }
+  void mouseWheel(MouseEvent event) {}
 }
 
 class PlayMode extends Mode {
@@ -57,9 +51,8 @@ class PositionCylindersMode extends Mode {
     //piazzamento cilindri spostato dovuto al fatto che mouseX è preso a y=0
     
     pushMatrix();
-    float x = clamp(mouseX - width / 2, -board.boardSizeX / 2 + cylinder.radius, board.boardSizeX / 2 - cylinder.radius);
-    float z = clamp(mouseY - height / 2, -board.boardSizeZ / 2 + cylinder.radius, board.boardSizeZ / 2 - cylinder.radius);
-    cylinder.display(x, z);
+    PVector mousePosition = getMousePosition();
+    cylinder.display(mousePosition.x, mousePosition.z);
     popMatrix();
     
     for (PVector position : cylinderPositions) {
@@ -71,11 +64,24 @@ class PositionCylindersMode extends Mode {
   }
 
   void mouseClicked() {
-    pushMatrix();
-    float x = clamp(mouseX - width / 2, -board.boardSizeX / 2 + cylinder.radius, board.boardSizeX / 2 - cylinder.radius);
+    PVector mousePosition = getMousePosition();
+    
+    //check if cylinder ovelaps with others and position it only if not
+    boolean overlap = false;
+    for (PVector cylPos : cylinderPositions) {
+      if (PVector.dist(cylPos, mousePosition) < 2 * cylinder.radius) {
+        overlap = true;
+      }
+    }
+    if (!overlap) {
+      cylinderPositions.add(mousePosition);
+    }
+  }
+  
+  PVector getMousePosition() {
+    float x = clamp(mouseX - width / 2, -25, 25);//-board.boardSizeX / 2 + cylinder.radius, board.boardSizeX / 2 - cylinder.radius);
     float z = clamp(mouseY - height / 2, -board.boardSizeZ / 2 + cylinder.radius, board.boardSizeZ / 2 - cylinder.radius);
-    cylinderPositions.add(new PVector(x, 0, z));
-    popMatrix();
+    return new PVector(x, 0, z);
   }
   
   void mouseWheel(MouseEvent event) {

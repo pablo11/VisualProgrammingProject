@@ -28,34 +28,36 @@ class Ball {
     if (position.x > board.boardSizeX / 2) {
       position.x = board.boardSizeX / 2;
       velocity.x = velocity.x * -1;
-      
+
       playSound(abs(velocity.x));
     } else if (position.x < -board.boardSizeX / 2) {
       position.x = -board.boardSizeX / 2;
       velocity.x = velocity.x * -1;
-      
+
       playSound(abs(velocity.x));
     }
 
     if (position.z > board.boardSizeZ / 2) {
       position.z = board.boardSizeZ / 2;
       velocity.z = velocity.z * -1;
-      
+
       playSound(abs(velocity.z));
     } else if (position.z < -board.boardSizeZ / 2) {
       position.z = -board.boardSizeZ / 2;
       velocity.z = velocity.z * -1;
-      
+
       playSound(abs(velocity.z));
     }
   }
-  
+
   //if velocity to small don't pay sound
   void playSound(float condition) {
     float soundTreshold = 2;
+    float dumpCoefficent = 10;
     if (condition > soundTreshold) {
-        sound.play();
-      }
+      sound.play();
+      sound.amp(clamp(abs(condition) / dumpCoefficent, 0, 1));
+    }
   }
 
   void display() {
@@ -79,14 +81,68 @@ class Ball {
   }
 
   void checkCylinderCollision() {
-    float collisionTreshold = 0.001;
-    float collision = ballRadius + cylinder.radius;
+    float collisionDistance = ballRadius + cylinder.radius;
+
+    //not needed in the working part
+    boolean collision = false;
+    ArrayList<PVector> collisionVelocities = new ArrayList<PVector>();
+    PVector finPos = new PVector(0, 0, 0);
+
+    ArrayList<PVector> coll = new ArrayList<PVector>();
+
     for (PVector cylPos : cylinderPositions) {
-      if (distanceBtwPoints(position, cylPos) - collision < collisionTreshold) {
-        PVector n = new PVector(position.x - cylPos.x, 0, position.z - cylPos.z);
-        n.normalize();
-        velocity = velocity.sub(n.mult(velocity.dot(n)*2));
+      if (PVector.dist(position, cylPos) < collisionDistance) {
+
+        /******************************************************************
+         *Here follows the working code
+         *WARNING: here we modify position immediatelly after we see a collision, if we have a double
+         *         simoultaneous collision we do not compute correctly the position and velocity.
+         */
+
+        //compute new velocity vector
+        PVector n = new PVector(position.x - cylPos.x, 0, position.z - cylPos.z).normalize();
+        velocity = PVector.sub(velocity, PVector.mult(n, PVector.dot(velocity, n)*2));
+
+        //place ball in exact impact position
+        position = (n.mult(collisionDistance)).add(cylPos);
+        playSound(abs(velocity.mag()));
+        //*/
+        /******************************************************************/
+        /*
+        //compute new velocity vector
+         PVector n = new PVector(position.x - cylPos.x, 0, position.z - cylPos.z).normalize();
+         collisionVelocities.add(PVector.sub(velocity, PVector.mult(n, PVector.dot(velocity, n)*2)));
+         
+         //compute exact ball impact position    
+         coll.add(cylPos);
+         finPos = PVector.add(PVector.mult(n, collisionDistance), cylPos);
+         //collPos.add(r);        
+         
+         collision = true;
+         */
       }
     }
+    //not needed in the working part
+    /*
+    if (collision) {
+     //compute and set final velocity
+     velocity = new PVector(0, 0, 0);
+     for(PVector v : collisionVelocities) {
+     velocity.add(v);
+     }
+     
+     //set impact position to current position
+     
+     //WARNING: here the finPos is calculated wrongly (it must be at same distance from all colliding cylinder)
+     position = finPos;
+     
+     println(collisionDistance + "\n");
+     for(PVector x : cylinderPositions) {
+     println(PVector.dist(x, position));
+     }
+     println();
+     playSound(abs(velocity.mag()));
+     }
+     */
   }
 }
