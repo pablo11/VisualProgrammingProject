@@ -28,28 +28,42 @@ class Ball {
     if (position.x > board.boardSizeX / 2) {
       position.x = board.boardSizeX / 2;
       velocity.x = velocity.x * -1;
-
+      
+      /* EXTRA */
+      /*
       playSound(abs(velocity.x));
+      //*/
     } else if (position.x < -board.boardSizeX / 2) {
       position.x = -board.boardSizeX / 2;
       velocity.x = velocity.x * -1;
 
+      /* EXTRA */
+      /*
       playSound(abs(velocity.x));
+      //*/
     }
 
     if (position.z > board.boardSizeZ / 2) {
       position.z = board.boardSizeZ / 2;
       velocity.z = velocity.z * -1;
-
+  
+      /* EXTRA */
+      /*
       playSound(abs(velocity.z));
+      //*/
     } else if (position.z < -board.boardSizeZ / 2) {
       position.z = -board.boardSizeZ / 2;
       velocity.z = velocity.z * -1;
-
+      
+      /* EXTRA */
+      /*
       playSound(abs(velocity.z));
+      //*/
     }
   }
-
+  
+  /* EXTRA */
+  /*
   //if velocity to small don't pay sound
   void playSound(float condition) {
     float soundTreshold = 2;
@@ -59,6 +73,7 @@ class Ball {
       sound.amp(clamp(abs(condition) / dumpCoefficent, 0, 1));
     }
   }
+  //*/
 
   void display() {
     noStroke();
@@ -72,7 +87,7 @@ class Ball {
 
   PVector friction() {
     float normalForce = 1;
-    float mu = 0.2;
+    float mu = 0.15;
     float frictionMagnitude = normalForce * mu;
     PVector friction = velocity.get();
     friction.mult(-1);
@@ -98,17 +113,20 @@ class Ball {
          *WARNING: here we modify position immediatelly after we see a collision, if we have a double
          *         simoultaneous collision we do not compute correctly the position and velocity.
          */
-
+        /*
         //compute new velocity vector
         PVector n = new PVector(position.x - cylPos.x, 0, position.z - cylPos.z).normalize();
         velocity = PVector.sub(velocity, PVector.mult(n, PVector.dot(velocity, n)*2));
 
         //place ball in exact impact position
         position = (n.mult(collisionDistance)).add(cylPos);
+        /* EXTRA */
+        /*
         playSound(abs(velocity.mag()));
         //*/
+        //*/
         /******************************************************************/
-        /*
+        
         //compute new velocity vector
          PVector n = new PVector(position.x - cylPos.x, 0, position.z - cylPos.z).normalize();
          collisionVelocities.add(PVector.sub(velocity, PVector.mult(n, PVector.dot(velocity, n)*2)));
@@ -119,11 +137,11 @@ class Ball {
          //collPos.add(r);        
          
          collision = true;
-         */
+         
       }
     }
     //not needed in the working part
-    /*
+    
     if (collision) {
      //compute and set final velocity
      velocity = new PVector(0, 0, 0);
@@ -141,8 +159,12 @@ class Ball {
      println(PVector.dist(x, position));
      }
      println();
+     
+     /* EXTRA */
+     /*
      playSound(abs(velocity.mag()));
+     //*/
      }
-     */
+     
   }
 }

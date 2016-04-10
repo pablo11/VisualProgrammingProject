@@ -1,5 +1,8 @@
+/* EXTRA: plays sound when bouncing */
+/*
 import processing.sound.*;
 SoundFile sound;
+//*/
 
 //objects
 Board board;
@@ -23,9 +26,11 @@ void setup() {
   play = new PlayMode();
   mode = play;
   
-  sound = new SoundFile(this, "boing.mp3");
- 
   gravityConstant = 1.1;
+  /* EXTRA */
+  /*
+  sound = new SoundFile(this, "boing.mp3");
+  //*/
 }
 
 void draw() { 
