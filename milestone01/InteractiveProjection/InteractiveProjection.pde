@@ -1,5 +1,5 @@
 void settings() {
-  size(1000, 1000, P2D);
+  size(800, 800, P2D);
 }
 
 void setup () {}
@@ -14,7 +14,7 @@ void draw() {
   My3DPoint eye = new My3DPoint(0, 0, -5000);
   My3DPoint origin = new My3DPoint(0, 0, 0);
   My3DBox input3DBox = new My3DBox(origin, 100, 150, 300);
-  float[][] translate = translationMatrix(300, 300, 0);
+  float[][] translate = translationMatrix(width/2, height/2, 0);
   float[][] scal = scaleMatrix(scale, scale, scale);
   //rotate around X axis
   float[][] rotX = rotateXMatrix(rotateX);
