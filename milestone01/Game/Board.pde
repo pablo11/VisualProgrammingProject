@@ -37,7 +37,6 @@ class Board {
 
   //board movements
   void move() {
-    /*
     //rotation around z axis
     if (prevMouseX > mouseX && rotateZ >= -PI / 3) {
       rotateZ -= max((PI / 60) * speed, -PI / 3);
@@ -45,7 +44,7 @@ class Board {
       rotateZ += min((PI / 60) * speed, PI / 3);
     }
     prevMouseX = mouseX;
-//*/
+
     //rotation around x axis
     if (prevMouseY < mouseY && rotateX >= -PI / 3) {
       rotateX -= max((PI / 60) * speed, -PI / 3);

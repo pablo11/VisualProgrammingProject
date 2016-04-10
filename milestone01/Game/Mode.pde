@@ -47,9 +47,7 @@ class PositionCylindersMode extends Mode {
 
   void display() {
     board.display(false);
-    
-    //piazzamento cilindri spostato dovuto al fatto che mouseX è preso a y=0
-    
+       
     pushMatrix();
     PVector mousePosition = getMousePosition();
     cylinder.display(mousePosition.x, mousePosition.z);
@@ -79,7 +77,7 @@ class PositionCylindersMode extends Mode {
   }
   
   PVector getMousePosition() {
-    float x = clamp(mouseX - width / 2, -25, 25);//-board.boardSizeX / 2 + cylinder.radius, board.boardSizeX / 2 - cylinder.radius);
+    float x = clamp(mouseX - width / 2, -board.boardSizeX / 2 + cylinder.radius, board.boardSizeX / 2 - cylinder.radius);
     float z = clamp(mouseY - height / 2, -board.boardSizeZ / 2 + cylinder.radius, board.boardSizeZ / 2 - cylinder.radius);
     return new PVector(x, 0, z);
   }
