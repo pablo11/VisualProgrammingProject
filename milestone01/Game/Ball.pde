@@ -12,9 +12,9 @@ class Ball {
   }
 
   void update() {
-    gravity.x = sin(rotateZ) * gravityConstant;
+    gravity.x = sin(board.rotateZ) * gravityConstant;
     gravity.y = 0;
-    gravity.z = -sin(rotateX) * gravityConstant;
+    gravity.z = -sin(board.rotateX) * gravityConstant;
 
     velocity.add(gravity);
     velocity.add(friction());
@@ -99,13 +99,13 @@ class Ball {
     float collisionDistance = ballRadius + cylinder.radius;
 
     for (PVector cylPos : cylinderPositions) {
-      if (PVector.dist(position, cylPos) < collisionDistance) {
+      if (PVector.dist(position, cylPos) <= collisionDistance) {
         //compute new velocity vector
         PVector n = new PVector(position.x - cylPos.x, 0, position.z - cylPos.z).normalize();
-        velocity = PVector.sub(velocity, PVector.mult(n, PVector.dot(velocity, n)*2));
+        velocity = PVector.sub(velocity, PVector.mult(n, PVector.dot(velocity, n) * 2));
 
         //place ball in exact impact position
-        position = (n.mult(collisionDistance)).add(cylPos);
+        position = PVector.add(n.mult(collisionDistance), cylPos);
         
         /* EXTRA */
         /*

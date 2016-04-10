@@ -45,7 +45,9 @@ class Cylinder {
   }
   
   void display(float x, float z) {
+    pushMatrix();
     translate(x, -board.boardSizeY / 2, z);   
     shape(cil);
+    popMatrix();
   }
 }

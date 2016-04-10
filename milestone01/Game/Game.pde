@@ -8,13 +8,14 @@ SoundFile sound;
 Board board;
 Ball ball;
 Cylinder cylinder;
+ArrayList<PVector> cylinderPositions;
 
+//mode
 Mode mode;
 PlayMode play;
 PositionCylindersMode cylinders;
 
-ArrayList<PVector> cylinderPositions;
-
+//constants
 float gravityConstant;
 
 void settings() {
@@ -33,7 +34,7 @@ void setup() {
   //*/
 }
 
-void draw() { 
+void draw() {
   //set camera and light position and direction
   camera(width/2, 0, width/2 + 100, 400, 400, 0, 0, 1, 0);
   directionalLight(50, 100, 125, 0, 1, 0);
@@ -46,11 +47,15 @@ void draw() {
 }
 
 void mouseDragged() {
-  board.move();
+  mode.mouseDragged();
 }
 
 void mouseWheel(MouseEvent event) {
   mode.mouseWheel(event);
+}
+
+void mouseClicked() {
+  mode.mouseClicked();
 }
 
 void keyPressed() {
@@ -67,8 +72,4 @@ void keyReleased() {
       mode = play;
     }
   }
-}
-
-void mouseClicked() {
-  mode.mouseClicked();
 }

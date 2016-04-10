@@ -1,22 +1,30 @@
-//speed and rotation
-float rotateX = 0;
-float rotateZ = 0;
-float speed = 1;
-//previous mouse position
-float prevMouseX = mouseX;
-float prevMouseY = mouseY;
-
 class Board {
   int boardSizeX;
   int boardSizeY;
   int boardSizeZ;
   color boardColor;
+  
+  //speed and rotation
+  float rotateX;
+  float rotateZ;
+  float speed;
+  
+  //previous mouse position
+  float prevMouseX;
+  float prevMouseY;
 
   Board(int sizeX, int sizeY, int sizeZ) {
     boardSizeX = sizeX;
     boardSizeY = sizeY;
     boardSizeZ = sizeZ;
     boardColor = color(0, 255, 0);
+    
+    rotateX = 0;
+    rotateZ = 0;
+    speed = 1;
+    
+    prevMouseX = mouseX;
+    prevMouseY = mouseY;
   }
 
   void display(boolean mooving) {
