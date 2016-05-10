@@ -70,7 +70,7 @@ class Score {
     createBarChart();
     image(barChart, topViewSize.x + scoreBoard.width + 3 * margin, margin); 
     
-     scrollbar.update();
+    scrollbar.update();
     scrollbar.display();
     
     popMatrix();

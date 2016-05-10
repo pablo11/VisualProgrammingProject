@@ -38,10 +38,12 @@ void setup() {
 void draw() {
   //directionalLight(50, 100, 125, 0, 0, -1200);
   //ambientLight(255, 255, 255);//102
+  directionalLight(229, 255, 204, 0, 1, -1);
   background(200, 200, 200);
   
   translate(width / 2, height / 2 - board.sizeY / 2, 0);
   mode.display();
+  score.display();
 }
 
 void mouseDragged() {

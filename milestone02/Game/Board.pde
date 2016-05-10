@@ -32,9 +32,6 @@ class Board {
     if (mooving) {
       rotateX(rotateX);
       rotateZ(rotateZ);
-    } else {    
-      //apply inverse rotation to the one applied to camera
-      inverseCameraRotation(PI / 2);
     }
     fill(colour);
     box(sizeX, sizeY, sizeZ);

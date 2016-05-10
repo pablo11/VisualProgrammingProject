@@ -5,9 +5,11 @@ class EditMode extends Mode {
   }
 
   void display() {
-    board.display(false);
-       
     pushMatrix();
+    rotateX(-PI/2);
+    
+    board.display(false);
+    
     PVector mousePosition = getMousePosition();
     if (checkOverlap(mousePosition)) {
       cylinder.colour = color(255, 0, 0);
@@ -15,15 +17,13 @@ class EditMode extends Mode {
       cylinder.colour = color(180);
     }
     cylinder.display(mousePosition.x, mousePosition.z);
-    popMatrix();
     
     for (PVector position : cylinderPositions) {
-      pushMatrix();
       cylinder.colour = color(180);
       cylinder.display(position.x, position.z);
-      popMatrix();
     }
     
+    popMatrix();
   }
   
   boolean checkOverlap(PVector position) {

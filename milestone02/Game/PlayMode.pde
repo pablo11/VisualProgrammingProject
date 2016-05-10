@@ -20,12 +20,14 @@ class PlayMode extends Mode {
     popMatrix();
 
     //display score
-    score.display();
+    //score.display();
     score.recordPoints();
   }
 
   void mouseDragged() {
-    board.move();
+    if (mouseY >= height/2 - 200) {
+      board.move();
+    }
   }
 
   void mouseWheel(MouseEvent event) {
