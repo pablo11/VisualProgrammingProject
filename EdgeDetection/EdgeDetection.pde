@@ -17,18 +17,22 @@ void draw() {
   //displayConvulsion();
   //displayThresholdBinary();
   //displaySobel();
+  /*
   float threshold1 = map(thresholdBar.getPos(), 0, 1, 0, 255);
-  float threshold2 = map(thresholdBar2.getPos(), 0, 1, 0, 255);
-  println(threshold1 + "  -  " + threshold2 + "\n");
+   float threshold2 = map(thresholdBar2.getPos(), 0, 1, 0, 255);
+   println(threshold1 + "  " + threshold2 + "\n");
+   */
   PImage origImg = loadImage("board1.jpg");
-  PImage img = thresholdColour(origImg, threshold1, threshold2, false);
+  PImage img = thresholdColour(origImg, 113, 137, true);
   img = gaussianBlur(img);
-  img = sobel(img, 0.3);//0.23
+  img = sobel(img, 0.29);
   image(img, 0, 0);
+  /*
   thresholdBar.update();
-  thresholdBar.display();
-  thresholdBar2.update();
-  thresholdBar2.display();
+   thresholdBar.display();
+   thresholdBar2.update();
+   thresholdBar2.display();
+   */
 }
 
 void displaySobel() {
@@ -52,8 +56,8 @@ void displayThresholdBinary() {
 void displayConvulsion() {
   PImage origImg = loadImage("board1.jpg");
   float[][] kernel = {{ 9, 12, 9 }, 
-                      { 12, 15, 12 }, 
-                      { 9, 12, 9 }};
+    { 12, 15, 12 }, 
+    { 9, 12, 9 }};
   float weight = 99.f; // weight for gaussian blur is the sum of all elements
   img = convolute(origImg, kernel, weight);
   image(img, 0, 0);
@@ -108,8 +112,8 @@ PImage thresholdColour(PImage img, float thresholdLowerBound, float thresholdUpp
 
 PImage gaussianBlur(PImage img) {
   float[][] kernel = {{ 9, 12, 9 }, 
-                      { 12, 15, 12 }, 
-                      { 9, 12, 9 }};
+    { 12, 15, 12 }, 
+    { 9, 12, 9 }};
   float weight = 99.f; // weight for gaussian blur is the sum of all elements
   return convolute(img, kernel, weight);
 }
@@ -120,13 +124,13 @@ PImage convolute(PImage img, float[][] kernel, float weight) {
   PImage result = createImage(img.width, img.height, ALPHA);
   for (int y = kernelSize / 2; y < img.height - kernelSize / 2; ++y) {
     for (int x = kernelSize / 2; x < img.width - kernelSize / 2; ++x) {        
-        int sum = 0;
-        for (int i = 0; i < kernelSize; ++i) {
-          for (int j = 0; j < kernelSize; ++j) {
-            sum += brightness(img.pixels[(y + i - kernelSize/2) * img.width + (x + j - kernelSize/2)]) * kernel[i][j];
-          }
+      int sum = 0;
+      for (int i = 0; i < kernelSize; ++i) {
+        for (int j = 0; j < kernelSize; ++j) {
+          sum += brightness(img.pixels[(y + i - kernelSize/2) * img.width + (x + j - kernelSize/2)]) * kernel[i][j];
         }
-        result.pixels[y * img.width + x] = color(sum / weight);
+      }
+      result.pixels[y * img.width + x] = color(sum / weight);
     }
   }
   return result;
