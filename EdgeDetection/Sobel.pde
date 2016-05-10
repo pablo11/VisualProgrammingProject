@@ -21,10 +21,6 @@ PImage sobel(PImage img, float treshold) {
   float max = 0;
   float[] buffer = new float[img.width * img.height];
 
-  // *************************************
-  // Implement here the double convolution
-  // *************************************
-  
   for (int y = kernelSize / 2; y < img.height - kernelSize / 2; ++y) {
     for (int x = kernelSize / 2; x < img.width - kernelSize / 2; ++x) {        
         int sum_h = 0;
@@ -43,8 +39,6 @@ PImage sobel(PImage img, float treshold) {
         buffer[y * img.width + x] = sum / weight;
     }
   }
-  
-  // *************************************
 
   for (int y = 2; y < img.height - 2; y++) { // Skip top and bottom edges
     for (int x = 2; x < img.width - 2; x++) { // Skip left and right

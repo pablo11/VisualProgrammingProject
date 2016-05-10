@@ -16,38 +16,27 @@ void draw() {
   //displayThresholdColour();
   //displayConvulsion();
   //displayThresholdBinary();
-  displaySobel();
-}
-
-void displaySobel() {
-  PImage origImg = loadImage("board1.jpg");
-  /*
+  //displaySobel();
   float threshold1 = map(thresholdBar.getPos(), 0, 1, 0, 255);
   float threshold2 = map(thresholdBar2.getPos(), 0, 1, 0, 255);
-  PImage threshold = thresholdColour(origImg, threshold1, threshold2, true);
-  //*/
-  /*
-  float[][] kernel = {{ 9, 12, 9 }, 
-                      { 12, 15, 12 }, 
-                      { 9, 12, 9 }};
-  float weight = 99.f; // weight for gaussian blur is the sum of all elements
-  PImage gaussianImg = convolute(threshold, kernel, weight);
-  //*/
-  /*
-  PImage img = sobel(threshold);
+  println(threshold1 + "  -  " + threshold2 + "\n");
+  PImage origImg = loadImage("board1.jpg");
+  PImage img = thresholdColour(origImg, threshold1, threshold2, false);
+  img = gaussianBlur(img);
+  img = sobel(img, 0.3);//0.23
   image(img, 0, 0);
   thresholdBar.update();
   thresholdBar.display();
   thresholdBar2.update();
   thresholdBar2.display();
-  //*/
-  //use treshold = 0.23;
+}
+
+void displaySobel() {
+  PImage origImg = loadImage("board1.jpg");
+  float treshold = 0.23;
   //try gaussian blur before
-  PImage img = sobel(origImg, thresholdBar.getPos());
-  println(thresholdBar.getPos());
+  PImage img = sobel(origImg, treshold);
   image(img, 0, 0);
-  thresholdBar.update();
-  thresholdBar.display();
 }
 
 void displayThresholdBinary() {
@@ -117,6 +106,13 @@ PImage thresholdColour(PImage img, float thresholdLowerBound, float thresholdUpp
   return result;
 }
 
+PImage gaussianBlur(PImage img) {
+  float[][] kernel = {{ 9, 12, 9 }, 
+                      { 12, 15, 12 }, 
+                      { 9, 12, 9 }};
+  float weight = 99.f; // weight for gaussian blur is the sum of all elements
+  return convolute(img, kernel, weight);
+}
 
 PImage convolute(PImage img, float[][] kernel, float weight) {
   int kernelSize = kernel.length;
