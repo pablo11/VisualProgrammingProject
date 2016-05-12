@@ -26,7 +26,9 @@ void draw() {
   PImage img = thresholdColour(origImg, 113, 137, true);
   img = gaussianBlur(img);
   img = sobel(img, 0.29);
-  image(img, 0, 0);
+  //img = displayHough(img);
+  image(origImg, 0, 0);
+  displayLines(img);
   /*
   thresholdBar.update();
    thresholdBar.display();
@@ -143,25 +145,4 @@ PImage copyImg(PImage orig, int format) {
   PImage ret = createImage(orig.width, orig.height, format);
   ret.pixels = orig.pixels;
   return ret;
-}
-
-boolean isBorder(int i, int borderSize, int w, int h) {
-  boolean isBorder = false;
-  //upper border
-  if (i < borderSize * w) {
-    isBorder = true;
-  }
-  //lower border
-  if (i > (h - borderSize) * w) {
-    isBorder = true;
-  }
-  //left border
-  if (i % w <= borderSize) {
-    isBorder = true;
-  }
-  //right border
-  if (i % w >= (h - borderSize)) {
-    isBorder = true;
-  }
-  return isBorder;
 }
