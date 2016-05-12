@@ -28,7 +28,7 @@ void draw() {
   img = sobel(img, 0.29);
   //img = displayHough(img);
   image(origImg, 0, 0);
-  displayLines(img);
+  getIntersections(displayLines(img, 200, 100));
   /*
   thresholdBar.update();
    thresholdBar.display();
