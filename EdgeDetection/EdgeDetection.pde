@@ -17,18 +17,23 @@ void draw() {
   //displayConvulsion();
   //displayThresholdBinary();
   //displaySobel();
-  /*
+  
   float threshold1 = map(thresholdBar.getPos(), 0, 1, 0, 255);
    float threshold2 = map(thresholdBar2.getPos(), 0, 1, 0, 255);
    println(threshold1 + "  " + threshold2 + "\n");
-   */
+  
   PImage origImg = loadImage("board1.jpg");
-  PImage img = thresholdColour(origImg, 113, 137, true);
+  PImage img = thresholdColour(origImg, 117, 134, true);
+  //image(img, 0, 0);
   img = gaussianBlur(img);
+  thresholdBinary(img, img, 110, false);
+  //image(img, 0, 0);
   img = sobel(img, 0.29);
+  //image(img, 0 ,0);
+  //displaySobel();
   //img = displayHough(img);
   image(origImg, 0, 0);
-  getIntersections(displayLines(img, 200, 100));
+  getIntersections(displayLines(img, 200, 4));
   /*
   thresholdBar.update();
    thresholdBar.display();
@@ -66,7 +71,7 @@ void displayConvulsion() {
 }
 
 void displayThresholdColour() {
-  PImage origImg = loadImage("test.png");
+  PImage origImg = loadImage("board1.jpg");
   float threshold1 = map(thresholdBar.getPos(), 0, 1, 0, 255);
   float threshold2 = map(thresholdBar2.getPos(), 0, 1, 0, 255);
   img = thresholdColour(origImg, threshold1, threshold2, false);
@@ -98,6 +103,7 @@ void thresholdBinary(PImage img, PImage result, float threshold, boolean inverte
 PImage thresholdColour(PImage img, float thresholdLowerBound, float thresholdUpperBound, boolean hueIt) {
   PImage result = createImage(img.width, img.height, RGB);
   for (int i = 0; i < img.width * img.height; i++) {
+    if(brightness(img.pixels[i]) != 0 && brightness(img.pixels[i]) != 255){
     float hue = hue(img.pixels[i]);
     if ((thresholdLowerBound < hue) && (hue < thresholdUpperBound)) {
       color col = img.pixels[i];
@@ -108,6 +114,9 @@ PImage thresholdColour(PImage img, float thresholdLowerBound, float thresholdUpp
     } else {
       result.pixels[i] = color(0);
     }
+  }else{
+    result.pixels[i] = color(0);
+  }
   }
   return result;
 }
