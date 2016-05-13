@@ -23,17 +23,18 @@ void draw() {
    println(threshold1 + "  " + threshold2 + "\n");
   
   PImage origImg = loadImage("board1.jpg");
-  PImage img = thresholdColour(origImg, 117, 134, true);
+  PImage img = thresholdColour(origImg, 117, 135, true);
   //image(img, 0, 0);
   img = gaussianBlur(img);
-  thresholdBinary(img, img, 110, false);
+  thresholdBinary(img, img, 105, false);
   //image(img, 0, 0);
   img = sobel(img, 0.29);
   //image(img, 0 ,0);
   //displaySobel();
   //img = displayHough(img);
+  //image(img, 0, 0);
   image(origImg, 0, 0);
-  getIntersections(displayLines(img, 200, 4));
+  getIntersections(displayLines(img, 200, 10));
   /*
   thresholdBar.update();
    thresholdBar.display();
@@ -103,7 +104,7 @@ void thresholdBinary(PImage img, PImage result, float threshold, boolean inverte
 PImage thresholdColour(PImage img, float thresholdLowerBound, float thresholdUpperBound, boolean hueIt) {
   PImage result = createImage(img.width, img.height, RGB);
   for (int i = 0; i < img.width * img.height; i++) {
-    if(brightness(img.pixels[i]) != 0 && brightness(img.pixels[i]) != 255){
+    if(brightness(img.pixels[i]) > 20 && brightness(img.pixels[i]) < 240 && saturation(img.pixels[i]) > 20){
     float hue = hue(img.pixels[i]);
     if ((thresholdLowerBound < hue) && (hue < thresholdUpperBound)) {
       color col = img.pixels[i];
