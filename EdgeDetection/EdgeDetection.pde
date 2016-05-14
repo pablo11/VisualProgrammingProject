@@ -1,3 +1,5 @@
+import java.util.Random;
+
 PImage img;
 HScrollbar thresholdBar;
 HScrollbar thresholdBar2;
@@ -7,40 +9,92 @@ void settings() {
 }
 
 void setup() {
+  
   thresholdBar = new HScrollbar(0, height - 45, width, 20);
   thresholdBar2 = new HScrollbar(0, height - 20, width, 20);
-  //noLoop();
+  
+  
+  
+  
+  
+  noLoop();
 }
 
 void draw() {
+  
+  
+  //float thresholdColourLowerBound = 0;
+  //float thresholdColourUpperBound = 0;
+  //float thresholdBinaryBound = 0;
+  
   //displayThresholdColour();
   //displayConvulsion();
   //displayThresholdBinary();
   //displaySobel();
   
   float threshold1 = map(thresholdBar.getPos(), 0, 1, 0, 255);
-   float threshold2 = map(thresholdBar2.getPos(), 0, 1, 0, 255);
-   println(threshold1 + "  " + threshold2 + "\n");
+  float threshold2 = map(thresholdBar2.getPos(), 0, 1, 0, 255);
+  println(threshold1 + "  " + threshold2 + "\n");
   
-  PImage origImg = loadImage("board1.jpg");
-  PImage img = thresholdColour(origImg, 117, 135, true);
-  //image(img, 0, 0);
+  PImage origImg = loadImage("board3.jpg");
+  
+  
+    
+  ////  thresholdColourLowerBound = 117;
+  ////  thresholdColourUpperBound = 135;
+  ////  thresholdBinaryBound = 105;
+  //// 104.61 137.63
+  
+  
+  PImage img = thresholdColour(origImg, 100, 136, true);
+  image(img, 0, 0);
   img = gaussianBlur(img);
-  thresholdBinary(img, img, 105, false);
-  //image(img, 0, 0);
+  thresholdBinary(img, img, 100, false);
+  image(img, 0, 0);
   img = sobel(img, 0.29);
   //image(img, 0 ,0);
-  //displaySobel();
-  //img = displayHough(img);
-  //image(img, 0, 0);
-  image(origImg, 0, 0);
-  getIntersections(displayLines(img, 200, 10));
-  /*
-  thresholdBar.update();
-   thresholdBar.display();
-   thresholdBar2.update();
-   thresholdBar2.display();
-   */
+  ////displaySobel();
+  ////img = displayHough(img);
+  ////image(img, 0, 0);
+  //image(origImg, 0, 0);
+  ArrayList<PVector> lines = displayLines(img, 150, 6);
+  //getIntersections(displayLines(img, 150, 7));
+  QuadGraph quadgraph = new QuadGraph();
+  quadgraph.build(lines, origImg.width, origImg.height);
+  List<int[]> quads = quadgraph.findCycles();
+  
+  for (int[] quad : quads) {
+       PVector l1 = lines.get(quad[0]);
+       PVector l2 = lines.get(quad[1]);
+       PVector l3 = lines.get(quad[2]);
+       PVector l4 = lines.get(quad[3]);
+// (intersection() is a simplified version of the
+// intersections() method you wrote last week, that simply
+// return the coordinates of the intersection between 2 lines) 
+
+
+PVector c12 = intersection(l1, l2);
+PVector c23 = intersection(l2, l3);
+PVector c34 = intersection(l3, l4);
+PVector c41 = intersection(l4, l1);
+
+if(quadgraph.isConvex(c12, c23, c34, c41) && quadgraph.validArea(c12, c23, c34, c41, c12.mag()*c23.mag()+5, c12.mag()*c23.mag()) && quadgraph.nonFlatQuad(c12, c23, c34, c41)){
+       // Choose a random, semi-transparent colour
+       Random random = new Random();
+       fill(color(min(255, random.nextInt(300)),
+               min(255, random.nextInt(300)),
+               min(255, random.nextInt(300)), 50));
+       quad(c12.x,c12.y,c23.x,c23.y,c34.x,c34.y,c41.x,c41.y);
+}
+   }
+    
+    
+    
+  //thresholdBar.update();
+  // thresholdBar.display();
+  // thresholdBar2.update();
+  // thresholdBar2.display();
+   
 }
 
 void displaySobel() {
@@ -72,7 +126,7 @@ void displayConvulsion() {
 }
 
 void displayThresholdColour() {
-  PImage origImg = loadImage("board1.jpg");
+  PImage origImg = loadImage("board.jpg");
   float threshold1 = map(thresholdBar.getPos(), 0, 1, 0, 255);
   float threshold2 = map(thresholdBar2.getPos(), 0, 1, 0, 255);
   img = thresholdColour(origImg, threshold1, threshold2, false);
@@ -156,3 +210,42 @@ PImage copyImg(PImage orig, int format) {
   ret.pixels = orig.pixels;
   return ret;
 }
+
+boolean sameImage(PImage image1, PImage image2){
+  
+  if(image1.pixels.length != image2.pixels.length){
+    
+    return false;
+  }
+  
+  for(int i = 0; i < image1.pixels.length; ++i){
+    
+    if(image1.pixels[i] != image2.pixels[i]){
+      
+      return false;
+    } 
+  }
+  
+  return true;
+}
+
+
+PVector intersection(PVector line1, PVector line2) {
+  
+        PVector intersection = new PVector();
+        
+                float d = cos(line2.y)*sin(line1.y) - cos(line1.y)*sin(line2.y);
+                
+                float x = (line2.x * sin(line1.y) - line1.x * sin(line2.y))/d;
+                float y = (-1*line2.x * cos(line1.y) + line1.x * cos(line2.y))/d;
+                
+                // draw the intersection
+                fill(255, 128, 0);
+                ellipse(x, y, 10, 10);
+                
+                intersection.x = x;
+                intersection.y = y;
+         
+                
+        return intersection;
+    }
