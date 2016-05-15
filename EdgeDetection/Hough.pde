@@ -137,23 +137,23 @@ bestCandidates.add(idx);
       int y3 = edgeImg.width;
       int x3 = (int) (-(y3 - r / sin(phi)) * (sin(phi) / cos(phi)));
       // Finally, plot the lines
-      stroke(204, 102, 0);
-      if (y0 > 0) {
-        if (x1 > 0)
-          line(x0, y0, x1, y1);
-        else if (y2 > 0)
-          line(x0, y0, x2, y2);
-        else
-          line(x0, y0, x3, y3);
-      } else {
-        if (x1 > 0) {
-          if (y2 > 0)
-            line(x1, y1, x2, y2);
-          else
-            line(x1, y1, x3, y3);
-        } else
-          line(x2, y2, x3, y3);
-      }
+      //stroke(204, 102, 0);
+      //if (y0 > 0) {
+      //  if (x1 > 0)
+      //    line(x0, y0, x1, y1);
+      //  else if (y2 > 0)
+      //    line(x0, y0, x2, y2);
+      //  else
+      //    line(x0, y0, x3, y3);
+      //} else {
+      //  if (x1 > 0) {
+      //    if (y2 > 0)
+      //      line(x1, y1, x2, y2);
+      //    else
+      //      line(x1, y1, x3, y3);
+      //  } else
+      //    line(x2, y2, x3, y3);
+      //}
   }
   
   return lines;

@@ -12,11 +12,7 @@ void setup() {
   
   thresholdBar = new HScrollbar(0, height - 45, width, 20);
   thresholdBar2 = new HScrollbar(0, height - 20, width, 20);
-  
-  
-  
-  
-  
+
   noLoop();
 }
 
@@ -32,11 +28,11 @@ void draw() {
   //displayThresholdBinary();
   //displaySobel();
   
-  float threshold1 = map(thresholdBar.getPos(), 0, 1, 0, 255);
-  float threshold2 = map(thresholdBar2.getPos(), 0, 1, 0, 255);
-  println(threshold1 + "  " + threshold2 + "\n");
+  //float threshold1 = map(thresholdBar.getPos(), 0, 1, 0, 255);
+  //float threshold2 = map(thresholdBar2.getPos(), 0, 1, 0, 255);
+  //println(threshold1 + "  " + threshold2 + "\n");
   
-  PImage origImg = loadImage("board3.jpg");
+  PImage origImg = loadImage("board4.jpg");
   
   
     
@@ -57,7 +53,7 @@ void draw() {
   ////img = displayHough(img);
   ////image(img, 0, 0);
   //image(origImg, 0, 0);
-  ArrayList<PVector> lines = displayLines(img, 150, 6);
+  ArrayList<PVector> lines = displayLines(img, 150, 5);
   //getIntersections(displayLines(img, 150, 7));
   QuadGraph quadgraph = new QuadGraph();
   quadgraph.build(lines, origImg.width, origImg.height);
@@ -68,22 +64,24 @@ void draw() {
        PVector l2 = lines.get(quad[1]);
        PVector l3 = lines.get(quad[2]);
        PVector l4 = lines.get(quad[3]);
+       
+       
 // (intersection() is a simplified version of the
 // intersections() method you wrote last week, that simply
 // return the coordinates of the intersection between 2 lines) 
-
-
 PVector c12 = intersection(l1, l2);
 PVector c23 = intersection(l2, l3);
 PVector c34 = intersection(l3, l4);
 PVector c41 = intersection(l4, l1);
 
-if(quadgraph.isConvex(c12, c23, c34, c41) && quadgraph.validArea(c12, c23, c34, c41, c12.mag()*c23.mag()+5, c12.mag()*c23.mag()) && quadgraph.nonFlatQuad(c12, c23, c34, c41)){
+if(quadgraph.isConvex(c12, c23, c34, c41) && quadgraph.validArea(c12, c23, c34, c41,600000, 100000) && quadgraph.nonFlatQuad(c12, c23, c34, c41)){
+  
+  
        // Choose a random, semi-transparent colour
        Random random = new Random();
        fill(color(min(255, random.nextInt(300)),
-               min(255, random.nextInt(300)),
-               min(255, random.nextInt(300)), 50));
+              min(255, random.nextInt(300)),
+              min(255, random.nextInt(300)), 50));
        quad(c12.x,c12.y,c23.x,c23.y,c34.x,c34.y,c41.x,c41.y);
 }
    }

@@ -255,7 +255,8 @@ class QuadGraph {
     float i4=v14.cross(v21).z;
 
     float area = Math.abs(0.5f * (i1 + i2 + i3 + i4));
-
+    
+    println("area:" + area);
     //System.out.println(area);
 
     boolean valid = (area < max_area && area > min_area);
