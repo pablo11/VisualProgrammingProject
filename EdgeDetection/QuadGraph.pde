@@ -25,10 +25,10 @@ class QuadGraph {
           // TODO
           // fill the graph using intersect() to check if two lines are
           // connected in the graph.
-          
+
           graph[idx][0] = i;
           graph[idx][1] = j;
-          
+
           idx++;
         }
       }
@@ -255,7 +255,7 @@ class QuadGraph {
     float i4=v14.cross(v21).z;
 
     float area = Math.abs(0.5f * (i1 + i2 + i3 + i4));
-    
+
     println("area:" + area);
     //System.out.println(area);
 
