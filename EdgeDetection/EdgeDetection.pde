@@ -6,12 +6,13 @@ float[] tabSin;
 float[] tabCos;
 
 void settings() {
-  size(800, 600);
+  size(1600, 600);
 }
 
 void setup() {
   fillSinCos();
-  //noLoop();
+  //noLoop only for static images
+  noLoop();
 }
 
 void draw() {
@@ -60,11 +61,12 @@ void draw() {
    }
    */
 
-  PImage origImg = loadImage("board3.jpg");
+  PImage origImg = loadImage("board2.jpg");
   PImage sobel = computeSobel(origImg);
+  image(sobel, 800, 0);
   img = displayAccumulator(sobel);
   image(origImg, 0, 0);
-  ArrayList<PVector> lines = displayLines(sobel, 200, 4);
+  ArrayList<PVector> lines = displayLines(sobel, 200, 6);
   getIntersections(lines);
 }
 
@@ -72,6 +74,13 @@ PImage computeSobel(PImage origImg) {
   PImage tmpImg = thresholdHue(origImg, 50, 140); //50, 140
   tmpImg = thresholdSaturation(tmpImg, 47, 255); //47, 255
   tmpImg = thresholdBrightness(tmpImg, 30, 220); //30, 220
+  
+  //gaussian blur
+  tmpImg = gaussianBlur(tmpImg);
+  
+  //binary treshold
+  tmpImg = thresholdBinary(tmpImg, 30, 220);
+  
   return sobel(tmpImg, 0.23);
 }
 

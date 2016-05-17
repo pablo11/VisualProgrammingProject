@@ -1,25 +1,8 @@
-void thresholdBinary(PImage img, PImage result, float threshold, boolean inverted) {
-  int brightness = 255;
-  if (inverted) {
-    brightness = 0;
-  }
-  //PImage result = createImage(img.width, img.height, RGB);
-  result.loadPixels();
-  for (int i = 0; i < img.width * img.height; i++) {
-    if (brightness(img.pixels[i]) > threshold) {
-      result.pixels[i] = color(brightness);
-    } else {
-      result.pixels[i] = color(255 - brightness);
-    }
-  }
-  result.updatePixels();
-}
-
-PImage thresholdHue(PImage img, float thresholdLowerBound, float thresholdUpperBound) {
-  PImage result = createImage(img.width, img.height, RGB);
-  for (int i = 0; i < img.width * img.height; i++) {
-    if ((thresholdLowerBound <= hue(img.pixels[i])) && (hue(img.pixels[i]) <= thresholdUpperBound)) {
-      result.pixels[i] = img.pixels[i];
+PImage thresholdBinary(PImage inImg, float thresholdLowerBound, float thresholdUpperBound) {
+  PImage result = createImage(inImg.width, inImg.height, RGB);
+  for (int i = 0; i < inImg.width * inImg.height; ++i) {
+    if ((thresholdLowerBound <= brightness(inImg.pixels[i])) && (brightness(inImg.pixels[i]) <= thresholdUpperBound)) {
+      result.pixels[i] = color(255);
     } else {
       result.pixels[i] = color(0);
     }
@@ -27,11 +10,11 @@ PImage thresholdHue(PImage img, float thresholdLowerBound, float thresholdUpperB
   return result;
 }
 
-PImage thresholdBrightness(PImage img, float thresholdLowerBound, float thresholdUpperBound) {
-  PImage result = createImage(img.width, img.height, RGB);
-  for (int i = 0; i < img.width * img.height; i++) {
-    if ((thresholdLowerBound <= brightness(img.pixels[i])) && (brightness(img.pixels[i]) <= thresholdUpperBound)) {
-      result.pixels[i] = img.pixels[i];
+PImage thresholdHue(PImage inImg, float thresholdLowerBound, float thresholdUpperBound) {
+  PImage result = createImage(inImg.width, inImg.height, RGB);
+  for (int i = 0; i < inImg.width * inImg.height; ++i) {
+    if ((thresholdLowerBound <= hue(inImg.pixels[i])) && (hue(inImg.pixels[i]) <= thresholdUpperBound)) {
+      result.pixels[i] = inImg.pixels[i];
     } else {
       result.pixels[i] = color(0);
     }
@@ -39,11 +22,23 @@ PImage thresholdBrightness(PImage img, float thresholdLowerBound, float threshol
   return result;
 }
 
-PImage thresholdSaturation(PImage img, float thresholdLowerBound, float thresholdUpperBound) {
-  PImage result = createImage(img.width, img.height, RGB);
-  for (int i = 0; i < img.width * img.height; i++) {
-    if ((thresholdLowerBound <= saturation(img.pixels[i])) && (saturation(img.pixels[i]) <= thresholdUpperBound)) {
-      result.pixels[i] = img.pixels[i];
+PImage thresholdBrightness(PImage inImg, float thresholdLowerBound, float thresholdUpperBound) {
+  PImage result = createImage(inImg.width, inImg.height, RGB);
+  for (int i = 0; i < inImg.width * inImg.height; ++i) {
+    if ((thresholdLowerBound <= brightness(inImg.pixels[i])) && (brightness(inImg.pixels[i]) <= thresholdUpperBound)) {
+      result.pixels[i] = inImg.pixels[i];
+    } else {
+      result.pixels[i] = color(0);
+    }
+  }
+  return result;
+}
+
+PImage thresholdSaturation(PImage inImg, float thresholdLowerBound, float thresholdUpperBound) {
+  PImage result = createImage(inImg.width, inImg.height, RGB);
+  for (int i = 0; i < inImg.width * inImg.height; ++i) {
+    if ((thresholdLowerBound <= saturation(inImg.pixels[i])) && (saturation(inImg.pixels[i]) <= thresholdUpperBound)) {
+      result.pixels[i] = inImg.pixels[i];
     } else {
       result.pixels[i] = color(0);
     }
