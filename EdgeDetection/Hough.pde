@@ -156,22 +156,25 @@ void drawLines(ArrayList<PVector> lines, PImage edgeImg) {
   }
 }
 
-ArrayList<PVector> getIntersections(List<PVector> lines) {
+ArrayList<PVector> getIntersections(List<PVector> lines, PImage inImg) {
   ArrayList<PVector> intersections = new ArrayList<PVector>();
 
   for (int i = 0; i < lines.size() - 1; ++i) {
     PVector line1 = lines.get(i);
     for (int j = i + 1; j < lines.size(); ++j) {
       PVector line2 = lines.get(j);
-      // compute the intersection and add it to ’intersections’
+      // compute the intersection
       float d = cos(line2.y) * sin(line1.y) - cos(line1.y) * sin(line2.y);
       float x = (line2.x * sin(line1.y) - line1.x * sin(line2.y)) / d;
       float y = (-line2.x * cos(line1.y) + line1.x * cos(line2.y)) / d;
 
-      intersections.add(new PVector(x, y));
-      // draw the intersection
-      fill(255, 128, 0);
-      ellipse(x, y, 10, 10);
+      //add intersection to list
+      if ((0 <= x) && (0 <= y) && (inImg.width >= x) && (inImg.height >= y)) {
+        intersections.add(new PVector(x, y));
+        // draw the intersection
+        fill(255, 128, 0);
+        ellipse(x, y, 10, 10);
+      }
     }
   }
   return intersections;

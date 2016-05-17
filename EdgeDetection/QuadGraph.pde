@@ -4,42 +4,29 @@ import java.util.List;
 import java.util.ArrayList;
 
 class QuadGraph {
-
-
   List<int[]> cycles = new ArrayList<int[]>();
   int[][] graph;
 
   void build(List<PVector> lines, int width, int height) {
-
     int n = lines.size();
-
     // The maximum possible number of edges is n * (n - 1)/2
     graph = new int[n * (n - 1)/2][2];
-
     int idx =0;
-
     for (int i = 0; i < lines.size(); i++) {
       for (int j = i + 1; j < lines.size(); j++) {
         if (intersect(lines.get(i), lines.get(j), width, height)) {
-
-          // TODO
-          // fill the graph using intersect() to check if two lines are
-          // connected in the graph.
-
           graph[idx][0] = i;
           graph[idx][1] = j;
-
-          idx++;
+          ++idx;
         }
       }
     }
   }
 
-  /** Returns true if polar lines 1 and 2 intersect 
-   * inside an area of size (width, height)
+  /**
+   * Returns true if polar lines 1 and 2 intersect inside an area of size (width, height)
    */
   boolean intersect(PVector line1, PVector line2, int width, int height) {
-
     double sin_t1 = Math.sin(line1.y);
     double sin_t2 = Math.sin(line2.y);
     double cos_t1 = Math.cos(line1.y);
@@ -48,18 +35,13 @@ class QuadGraph {
     float r2 = line2.x;
 
     double denom = cos_t2 * sin_t1 - cos_t1 * sin_t2;
-
     int x = (int) ((r2 * sin_t1 - r1 * sin_t2) / denom);
     int y = (int) ((-r2 * cos_t1 + r1 * cos_t2) / denom);
 
-    if (0 <= x && 0 <= y && width >= x && height >= y)
-      return true;
-    else
-      return false;
+    return (0 <= x && 0 <= y && width >= x && height >= y);
   }
 
   List<int[]> findCycles() {
-
     cycles.clear();
     for (int i = 0; i < graph.length; i++) {
       for (int j = 0; j < graph[i].length; j++) {
@@ -76,47 +58,41 @@ class QuadGraph {
     return cycles;
   }
 
-  void findNewCycles(int[] path)
-  {
+  void findNewCycles(int[] path) {
     int n = path[0];
     int x;
     int[] sub = new int[path.length + 1];
 
-    for (int i = 0; i < graph.length; i++)
-      for (int y = 0; y <= 1; y++)
-        if (graph[i][y] == n)
+    for (int i = 0; i < graph.length; i++) {
+      for (int y = 0; y <= 1; y++) {
+        if (graph[i][y] == n) {
           //  edge refers to our current node
-        {
           x = graph[i][(y + 1) % 2];
-          if (!visited(x, path))
+          if (!visited(x, path)) {
             //  neighbor node not on path yet
-          {
             sub[0] = x;
             System.arraycopy(path, 0, sub, 1, path.length);
             //  explore extended path
             findNewCycles(sub);
-          } else if ((path.length == 4) && (x == path[path.length - 1]))
+          } else if ((path.length == 4) && (x == path[path.length - 1])) {
             //  cycle found
-          {
             int[] p = normalize(path);
             int[] inv = invert(p);
-            if (isNew(p) && isNew(inv))
-            {
+            if (isNew(p) && isNew(inv)) {
               cycles.add(p);
             }
           }
         }
+      }
+    }
   }
 
   //  check of both arrays have same lengths and contents
-  Boolean equals(int[] a, int[] b)
-  {
+  Boolean equals(int[] a, int[] b) {
     Boolean ret = (a[0] == b[0]) && (a.length == b.length);
 
-    for (int i = 1; ret && (i < a.length); i++)
-    {
-      if (a[i] != b[i])
-      {
+    for (int i = 1; ret && (i < a.length); i++) {
+      if (a[i] != b[i]) {
         ret = false;
       }
     }
@@ -125,12 +101,10 @@ class QuadGraph {
   }
 
   //  create a path array with reversed order
-  int[] invert(int[] path)
-  {
+  int[] invert(int[] path) {
     int[] p = new int[path.length];
 
-    for (int i = 0; i < path.length; i++)
-    {
+    for (int i = 0; i < path.length; i++) {
       p[i] = path[path.length - 1 - i];
     }
 
@@ -138,16 +112,13 @@ class QuadGraph {
   }
 
   //  rotate cycle path such that it begins with the smallest node
-  int[] normalize(int[] path)
-  {
+  int[] normalize(int[] path) {
     int[] p = new int[path.length];
     int x = smallest(path);
     int n;
-
     System.arraycopy(path, 0, p, 0, path.length);
 
-    while (p[0] != x)
-    {
+    while (p[0] != x) {
       n = p[0];
       System.arraycopy(p, 1, p, 0, p.length - 1);
       p[p.length - 1] = n;
@@ -158,14 +129,11 @@ class QuadGraph {
 
   //  compare path against known cycles
   //  return true, iff path is not a known cycle
-  Boolean isNew(int[] path)
-  {
+  Boolean isNew(int[] path) {
     Boolean ret = true;
 
-    for (int[] p : cycles)
-    {
-      if (equals(p, path))
-      {
+    for (int[] p : cycles) {
+      if (equals(p, path)) {
         ret = false;
         break;
       }
@@ -175,14 +143,11 @@ class QuadGraph {
   }
 
   //  return the int of the array which is the smallest
-  int smallest(int[] path)
-  {
+  int smallest(int[] path) {
     int min = path[0];
 
-    for (int p : path)
-    {
-      if (p < min)
-      {
+    for (int p : path) {
+      if (p < min) {
         min = p;
       }
     }
@@ -191,14 +156,11 @@ class QuadGraph {
   }
 
   //  check if vertex n is contained in path
-  Boolean visited(int n, int[] path)
-  {
+  Boolean visited(int n, int[] path) {
     Boolean ret = false;
 
-    for (int p : path)
-    {
-      if (p == n)
-      {
+    for (int p : path) {
+      if (p == n) {
         ret = true;
         break;
       }
@@ -221,7 +183,6 @@ class QuadGraph {
    * @param c1
    */
   boolean isConvex(PVector c1, PVector c2, PVector c3, PVector c4) {
-
     PVector v21= PVector.sub(c1, c2);
     PVector v32= PVector.sub(c2, c3);
     PVector v43= PVector.sub(c3, c4);
@@ -232,18 +193,14 @@ class QuadGraph {
     float i3=v43.cross(v14).z;
     float i4=v14.cross(v21).z;
 
-    if (   (i1>0 && i2>0 && i3>0 && i4>0) 
-      || (i1<0 && i2<0 && i3<0 && i4<0))
-      return true;
-    else 
-    System.out.println("Eliminating non-convex quad");
+    if ((i1>0 && i2>0 && i3>0 && i4>0) || (i1<0 && i2<0 && i3<0 && i4<0)) return true;
+    else System.out.println("Eliminating non-convex quad");
     return false;
   }
 
   /** Compute the area of a quad, and check it lays within a specific range
    */
   boolean validArea(PVector c1, PVector c2, PVector c3, PVector c4, float max_area, float min_area) {
-
     PVector v21= PVector.sub(c1, c2);
     PVector v32= PVector.sub(c2, c3);
     PVector v43= PVector.sub(c3, c4);
@@ -255,12 +212,9 @@ class QuadGraph {
     float i4=v14.cross(v21).z;
 
     float area = Math.abs(0.5f * (i1 + i2 + i3 + i4));
-
     println("area:" + area);
-    //System.out.println(area);
 
     boolean valid = (area < max_area && area > min_area);
-
     if (!valid) System.out.println("Area out of range");
 
     return valid;
@@ -270,7 +224,6 @@ class QuadGraph {
    * (the quad representing our board should be close to a rectangle)
    */
   boolean nonFlatQuad(PVector c1, PVector c2, PVector c3, PVector c4) {
-
     // cos(70deg) ~= 0.3
     float min_cos = 0.5f;
 
@@ -294,7 +247,6 @@ class QuadGraph {
 
 
   List<PVector> sortCorners(List<PVector> quad) {
-
     // 1 - Sort corners so that they are ordered clockwise
     PVector a = quad.get(0);
     PVector b = quad.get(2);
@@ -302,8 +254,6 @@ class QuadGraph {
     PVector center = new PVector((a.x+b.x)/2, (a.y+b.y)/2);
 
     Collections.sort(quad, new CWComparator(center));
-
-
 
     // 2 - Sort by upper left most corner
     PVector origin = new PVector(0, 0);
@@ -313,16 +263,15 @@ class QuadGraph {
       if (p.dist(origin) < distToOrigin) distToOrigin = p.dist(origin);
     }
 
-    while (quad.get(0).dist(origin) != distToOrigin)
+    while (quad.get(0).dist(origin) != distToOrigin) {
       Collections.rotate(quad, 1);
-
+    }
 
     return quad;
   }
 }
 
 class CWComparator implements Comparator<PVector> {
-
   PVector center;
 
   public CWComparator(PVector center) {
