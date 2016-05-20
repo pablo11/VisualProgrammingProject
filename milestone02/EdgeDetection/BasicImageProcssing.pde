@@ -74,16 +74,17 @@ PImage convolute(PImage img, float[][] kernel, float weight) {
   return result;
 }
 
-boolean sameImage(PImage image1, PImage image2) {
-  if (image1.pixels.length != image2.pixels.length) {
-    return false;
-  }
+//counts number of white pixels on a binary thresholded image to estimate the area of the plate
+void areaBounds(PImage thresholdedImg) {
+  int boardPixels = 0;
 
-  for (int i = 0; i < image1.pixels.length; ++i) {
-    if (image1.pixels[i] != image2.pixels[i]) {
-      return false;
+  for (int i = 0; i < thresholdedImg.width * thresholdedImg.height; ++i) {
+    if (thresholdedImg.pixels[i] == color(255)) {
+      boardPixels += 1;
     }
   }
-
-  return true;
+  
+  float tollerance = 0.05;
+  areaUpperBound = boardPixels * (1 + tollerance);
+  areaLowerBound = boardPixels * (1 - tollerance);
 }

@@ -11,8 +11,6 @@ PImage sobel(PImage img, float treshold) {
     {0, 0, 0 }
   };
 
-  float weight = 1.f;
-
   int kernelSize = 3;
 
   PImage result = createImage(img.width, img.height, ALPHA);
@@ -40,13 +38,13 @@ PImage sobel(PImage img, float treshold) {
       if (sum > max) {
         max = sum;
       }
-      buffer[y * img.width + x] = sum / weight;
+      buffer[y * img.width + x] = sum;
     }
   }
 
   for (int y = 2; y < img.height - 2; y++) { // Skip top and bottom edges
     for (int x = 2; x < img.width - 2; x++) { // Skip left and right
-      if (buffer[y * img.width + x] > (int)(max * treshold)) { // 30% of the max
+      if (buffer[y * img.width + x] > (int)(max * treshold)) { // 30% of the max is the recommended value
         result.pixels[y * img.width + x] = color(255);
       } else {
         result.pixels[y * img.width + x] = color(0);
