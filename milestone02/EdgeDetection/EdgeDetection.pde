@@ -90,6 +90,12 @@ void drawQuad(int[] quad, ArrayList<PVector> lines) {
   for (PVector inter : intersections) {
     ellipse(inter.x, inter.y, 10, 10);
   }
+  
+  ArrayList<PVector> intersezioni = new ArrayList<PVector>(Arrays.asList(intersections));
+  
+  TwoDThreeD projecter = new TwoDThreeD(img.width, img.height);
+  PVector rotations = projecter.get3DRotations(sortCorners(intersezioni));
+
 }
 
 void drawLines(ArrayList<PVector> lines, PImage edgeImg) {

@@ -2,6 +2,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 class QuadGraph {
   List<int[]> cycles = new ArrayList<int[]>();
@@ -245,7 +246,7 @@ class QuadGraph {
   }
 
 
-  List<PVector> sortCorners(List<PVector> quad) {
+  public  List<PVector> sortCorners(List<PVector> quad) {
     // 1 - Sort corners so that they are ordered clockwise
     PVector a = quad.get(0);
     PVector b = quad.get(2);
@@ -270,7 +271,7 @@ class QuadGraph {
   }
 }
 
-class CWComparator implements Comparator<PVector> {
+static class CWComparator implements Comparator<PVector> {
   PVector center;
 
   public CWComparator(PVector center) {
