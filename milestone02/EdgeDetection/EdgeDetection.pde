@@ -11,7 +11,7 @@ void settings() {
 }
 
 void setup() {
-  img = loadImage("board1.jpg");
+  img = loadImage("board4.jpg");
   quadgraph = new QuadGraph();
   fillSinCos();
   //noLoop only for static images
