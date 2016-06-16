@@ -11,7 +11,7 @@ void settings() {
 }
 
 void setup() {
-  img = loadImage("board1.jpg");
+  img = loadImage("board2.jpg");
   quadgraph = new QuadGraph();
   fillSinCos();
   //noLoop only for static images
@@ -90,6 +90,20 @@ void drawQuad(int[] quad, ArrayList<PVector> lines) {
   for (PVector inter : intersections) {
     ellipse(inter.x, inter.y, 10, 10);
   }
+  
+  // Da qui in poi controllo che le rotazioni vengano rilevate correttamente.
+  
+  ArrayList<PVector> intersezioni = new ArrayList<PVector>(Arrays.asList(intersections));
+  
+  TwoDThreeD projecter = new TwoDThreeD(img.width, img.height);
+  PVector rotations = projecter.get3DRotations(sortCorners(intersezioni));
+  
+  float rot1 = degrees(rotations.x);
+  float rot2 = degrees(rotations.y);
+  float rot3 = degrees(rotations.z);
+  
+  print("rot1: " + rot1 + "rot2: " + rot2 + "rot3: " + rot3);
+
 }
 
 void drawLines(ArrayList<PVector> lines, PImage edgeImg) {

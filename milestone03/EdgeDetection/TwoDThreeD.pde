@@ -16,7 +16,7 @@ class TwoDThreeD {
   
   // Real physical coordinates of the Lego board in mm
    float boardSize = 380.f; // large Duplo board
-  // float boardSize = 255.f; // smaller Lego board
+  //float boardSize = 255.f; // smaller Lego board
   
   // the 3D coordinates of the physical board corners, clockwise
    float [][] physicalCorners = {
@@ -24,8 +24,8 @@ class TwoDThreeD {
               // Store here the 3D coordinates of the corners of
               // the real Lego board, in homogenous coordinates
               // and clockwise.
-              
-              {-128,-128,0,1}, {128,-128,0,1}, {128,128,0,1}, {-128,128,0,1}
+              //sostituire 128 con boardsSize/2
+              {-boardSize/2,-boardSize/2,0,1}, {boardSize/2,-boardSize/2,0,1}, {boardSize/2,boardSize/2,0,1}, {-boardSize/2,boardSize/2,0,1}
               };
   
   public TwoDThreeD(int width, int height) {
@@ -88,13 +88,19 @@ class TwoDThreeD {
         // corner p found in the webcam image.
         // You can use Mat.multiply to multiply a matrix with a vector.
         
+        //PVector vector = points2D.get(i);
+        //float z = vector.z;
+        //float[] p = vector.div(z).array();
+        //float[] product = Mat.multiply(invK, p);
+        //projectedCorners[i][0] = product[0];
+        //projectedCorners[i][1] = product[1];
+        //projectedCorners[i][2] = product[2];
+        
         PVector vector = points2D.get(i);
-        float z = vector.z;
-        float[] p = vector.div(z).array();
+        
+        float[] p = {vector.x, vector.y, 1};
         float[] product = Mat.multiply(invK, p);
-        projectedCorners[i][0] = product[0];
-        projectedCorners[i][1] = product[1];
-        projectedCorners[i][2] = product[2];
+        projectedCorners[i] = product;
     }
     
     // 'A' contains the cross-product (K^(-1) · p) X P
