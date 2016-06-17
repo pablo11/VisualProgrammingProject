@@ -32,10 +32,6 @@ class Board {
     if (mooving) {
       rotateX(rotateX);
       rotateZ(rotateZ);
-    } else {    
-      //apply inverse rotation to the one applied to camera
-      //inverseCameraRotation(PI / 2);
-      rotateX(-PI/2);
     }
     fill(colour);
     box(sizeX, sizeY, sizeZ);
@@ -58,6 +54,11 @@ class Board {
       rotateX += min((PI / 60) * speed, PI / 3);
     }
     prevMouseY = mouseY;
+  }
+  
+  void moveWithWebcam(PVector rot) {
+    rotateX = rot.x;
+    rotateZ = rot.z;
   }
 
   //change speed (min: 0.2, max: 1.5)

@@ -1,10 +1,9 @@
 class Score {
-  PVectorUInt backgroundSize;
-  private int margin;
+  private PVectorUInt backgroundSize;
   private PVectorUInt topViewSize;
-  private PVectorUInt scoreBoardSize;
   private PVectorUInt barChartSize;
-  private PGraphics background;
+  private int margin;
+  public PGraphics background;
   private PGraphics topView;
   private PGraphics scoreBoard;
   private PGraphics barChart;
@@ -17,6 +16,7 @@ class Score {
   private int counter;
   //maybe it's better to set only background size and define others in function of it
 
+  HScrollbar scrollbar;
 
   Score() {
     previousPoints = 0;
@@ -34,26 +34,25 @@ class Score {
       topViewSize.y = backgroundSize.y - 2 * margin;
       topViewSize.x = topViewSize.y * board.sizeX / board.sizeZ;
     }
-
-    scoreBoardSize = new PVectorUInt(120, backgroundSize.y - 2 * margin);
-    barChartSize = new PVectorUInt(backgroundSize.x - topViewSize.x - scoreBoardSize.x - 4 * margin, backgroundSize.y - 2 * margin);
     
     background = createGraphics(backgroundSize.x, backgroundSize.y, P2D);
     topView = createGraphics(topViewSize.x, topViewSize.y, P2D);
-    scoreBoard = createGraphics(scoreBoardSize.x, scoreBoardSize.y, P2D);
+    scoreBoard = createGraphics(120, backgroundSize.y - 2 * margin, P2D);
+    
+    barChartSize = new PVectorUInt(backgroundSize.x - topViewSize.x - scoreBoard.width - 4 * margin, backgroundSize.y - 10 - 3 * margin);
+    
     barChart = createGraphics(barChartSize.x, barChartSize.y, P2D);
     
-    pointsChart = new PointsChart(10, 10);
+    pointsChart = new PointsChart(8);
     
     counter = 0;
+    
+    scrollbar = new HScrollbar(topViewSize.x + scoreBoard.width + 3 * margin, barChart.height + 2 * margin, barChart.width, 10);
   }
 
   void display() {
     pushMatrix();
-    //inverseCameraRotation(0);
-
-    translate(-width / 2, height / 2 - backgroundSize.y, 0);
-    //translate(-width/2+10, 200, -80);
+    translate(-width / 2, height / 2 - backgroundSize.y + board.sizeY / 2, 0);
 
     //draw backgound
     createBackground();
@@ -69,39 +68,45 @@ class Score {
     
     //draw barChart
     createBarChart();
-    image(barChart, topViewSize.x + scoreBoardSize.x + 3 * margin, margin); 
-
+    image(barChart, topViewSize.x + scoreBoard.width + 3 * margin, margin); 
+    
+    scrollbar.update();
+    scrollbar.display();
+    
     popMatrix();
   }
   
   private void createBackground() {
     background.beginDraw();
-    background.background(0, 0, 0);
+    background.background(0);
     background.endDraw();
   }
 
+  private float mapFlatX(float toMap) {
+    return map(toMap, -board.sizeX/2, board.sizeX/2, 0, topViewSize.x);
+  }
+  
+  private float mapFlatY(float toMap) {
+    return map(toMap, -board.sizeZ/2, board.sizeZ/2, 0, topViewSize.y);
+  }
+  
   private void createTopView() {
     //calculate ball and cylinders radius proportionally to the ones on the board
-    float ballRadius = (ball.radius * topViewSize.x) / board.sizeX;
-    float cylindersRadius = (cylinder.radius * topViewSize.x) / board.sizeX;
-
+    float ballDiameter = 2 * ball.radius * topViewSize.x / board.sizeX;
+    float cylinderDiameter = 2 * cylinder.radius * topViewSize.x / board.sizeX;
+    
     pushMatrix();
     topView.beginDraw();
     topView.background(board.colour);
+    //draw cylinders
     topView.fill(cylinder.colour);
     topView.noStroke();
     for (PVector cyl : cylinderPositions) {
-      //here bouns board size are wrong
-      //float x = map(cyl.x, -board.sizeX/2, board.sizeX/2, 0, topViewSize.x);
-      //float y = map(cyl.z, -board.sizeZ/2, board.sizeZ/2, 0, topViewSize.y);
-      float x = map(cyl.x, -(board.sizeX/2 - cylinder.radius), board.sizeX/2 - cylinder.radius, 0, topViewSize.x);
-      float y = map(cyl.z, -(board.sizeZ/2 - cylinder.radius), board.sizeZ/2 - cylinder.radius, 0, topViewSize.y);
-      topView.ellipse(x, y, cylindersRadius, cylindersRadius);
+      topView.ellipse(mapFlatX(cyl.x), mapFlatY(cyl.z), cylinderDiameter, cylinderDiameter);
     }
-    topView.fill(255, 0, 0);
-    float x = map(ball.position.x, -(board.sizeX/2 - cylinder.radius), board.sizeX/2 - cylinder.radius, 0, topViewSize.x);
-    float y = map(ball.position.z, -(board.sizeZ/2 - cylinder.radius), board.sizeZ/2 - cylinder.radius, 0, topViewSize.y);
-    topView.ellipse(x, y, ballRadius, ballRadius);
+    //draw ball
+    topView.fill(ball.colour);
+    topView.ellipse(mapFlatX(ball.position.x), mapFlatY(ball.position.z), ballDiameter, ballDiameter);
 
     topView.endDraw();
     popMatrix();
@@ -110,19 +115,14 @@ class Score {
   private void createScoreBoard() {
     pushMatrix();
     scoreBoard.beginDraw();
-    scoreBoard.background(255, 255, 0);
-
-    String currPoints = "Total score: \n" + points;
-    String vel = "Velocity: \n" + ball.velocity.mag();
-    String prevPoints = "Last score: \n" + previousPoints;
-
+    scoreBoard.background(255);
     translate(topViewSize.x + 2 * margin, margin);
 
-    scoreBoard.textSize(16);
+    scoreBoard.textSize(14);
     scoreBoard.fill(0);
-    scoreBoard.text(currPoints, 10, 20);
-    scoreBoard.text(vel, 10, 80);
-    scoreBoard.text(prevPoints, 10, 140);
+    scoreBoard.text("Total score: \n" + points, 10, 20);
+    scoreBoard.text("Velocity: \n" + ball.velocity.mag(), 10, scoreBoard.height / 3 + 20);
+    scoreBoard.text("Last score: \n" + previousPoints, 10, scoreBoard.height / 3 * 2 + 20);
 
     scoreBoard.endDraw();
     popMatrix();
@@ -151,7 +151,7 @@ class Score {
     barChart.beginDraw();
     barChart.background(255);
     pushMatrix();
-    pointsChart.drawChart(barChart, barChartSize);
+    pointsChart.drawChart(barChart);
     popMatrix();
     barChart.endDraw();
   }

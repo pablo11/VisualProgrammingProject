@@ -10,7 +10,7 @@ class Ball {
     position = new PVector(0, 0, 0);
     velocity = new PVector(0, 0, 0);
     gravity = new PVector(0, 1, 0);
-    colour = color(160);
+    colour = color(160, 0, 0);
   }
 
   void update() {
@@ -114,14 +114,11 @@ class Ball {
   /*
   void checkCylinderCollision() {
     float collisionDistance = ballRadius + cylinder.radius;
-
     //not needed in the working part
     boolean collision = false;
     ArrayList<PVector> collisionVelocities = new ArrayList<PVector>();
     PVector collided = new PVector(0, 0, 0);
-
     ArrayList<PVector> coll = new ArrayList<PVector>();
-
     for (PVector cylPos : cylinderPositions) {
       if (PVector.dist(position, cylPos) < collisionDistance) {
         //compute new velocity vector
@@ -151,10 +148,8 @@ class Ball {
        velocity.add(v);
      }
      println("vel : " + velocity.x + "  " + velocity.z);
-
      position = PVector.sub(position, PVector.mult(velocity, -k));
     println("pos : " + position.x + "  " + position.z);
-
      }
      
   }

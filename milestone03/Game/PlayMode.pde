@@ -8,7 +8,6 @@ class PlayMode extends Mode {
   void display() {    
     // movements
     pushMatrix();
-    translate(0, -200, 0);
     board.display(true);
     ball.display();
     
@@ -19,14 +18,20 @@ class PlayMode extends Mode {
       popMatrix();
     }
     popMatrix();
+    
+    PVector rotation = edgeDetection.rotation;
+    
+    board.moveWithWebcam(rotation);
 
-    //display score
-    score.display();
     score.recordPoints();
   }
 
   void mouseDragged() {
-    board.move();
+    /*
+    if (mouseY < height - score.background.height) {
+      board.move();
+    }
+    */
   }
 
   void mouseWheel(MouseEvent event) {

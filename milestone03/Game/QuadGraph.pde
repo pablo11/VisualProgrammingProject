@@ -54,7 +54,6 @@ class QuadGraph {
       for (int i = 1; i < cy.length; i++) {
         s += "," + cy[i];
       }
-      System.out.println(s);
     }
     return cycles;
   }
@@ -212,7 +211,7 @@ class QuadGraph {
 
     float area = i1 + i2;
     
-    println("area:" + area);
+    println("Area: " + area);
 
     boolean valid = (area < max_area && area > min_area);
     if (!valid) System.out.println("Area out of range");
@@ -246,12 +245,11 @@ class QuadGraph {
   }
 
 
-  public  List<PVector> sortCorners(List<PVector> quad) {
+  List<PVector> sortCorners(List<PVector> quad) {
     // 1 - Sort corners so that they are ordered clockwise
     PVector a = quad.get(0);
     PVector b = quad.get(2);
-
-    PVector center = new PVector((a.x+b.x)/2, (a.y+b.y)/2);
+    PVector center = new PVector((a.x + b.x) / 2, (a.y + b.y) / 2);
 
     Collections.sort(quad, new CWComparator(center));
 
@@ -271,7 +269,7 @@ class QuadGraph {
   }
 }
 
-static class CWComparator implements Comparator<PVector> {
+class CWComparator implements Comparator<PVector> {
   PVector center;
 
   public CWComparator(PVector center) {
@@ -280,7 +278,7 @@ static class CWComparator implements Comparator<PVector> {
 
   @Override
     public int compare(PVector b, PVector d) {
-    if (Math.atan2(b.y-center.y, b.x-center.x)<Math.atan2(d.y-center.y, d.x-center.x))      
+    if (Math.atan2(b.y - center.y, b.x - center.x) < Math.atan2(d.y - center.y, d.x - center.x))      
       return -1; 
     else return 1;
   }
