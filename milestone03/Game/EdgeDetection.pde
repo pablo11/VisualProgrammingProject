@@ -1,83 +1,102 @@
-import processing.video.*;
-
 float areaUpperBound;
 float areaLowerBound;
 
 float[] tabSin;
 float[] tabCos;
 
-class EdgeDetection extends PApplet {
-  private Capture cam;
-
-  PVector rotation;
-  private PImage img;
+class EdgeDetection {
+  private PImage tmp;
+  private PImage sobel;
   private QuadGraph quadgraph;
   private TwoDThreeD projecter;
+  private int oneComputationEveryXFrames;
+  private int currFrame;
+  
+  private PVector rotation;
 
   EdgeDetection() {
-  }
-
-  void settings() {
-    size(800, 600);
-  }
-
-  void setup() {
-    rotation = new PVector(0, 0, 0);
-    
+    /*
     String[] cameras = Capture.list();
-    if (cameras.length == 0) {
-      println("There are no cameras available for capture.");
-      exit();
-    } else {
-      cam = new Capture(this, cameras[0]);
-      cam.start();
-    }
-    img = cam.get();
+     if (cameras.length == 0) {
+     println("There are no cameras available for capture.");
+     exit();
+     } else {
+     cam = new Capture(this, cameras[0]);
+     cam.start();
+     }
+     img = cam.get();
+     */
 
     quadgraph = new QuadGraph();
-    projecter = new TwoDThreeD(img.width, img.height);
+    projecter = new TwoDThreeD(mov.width, mov.height);
     fillSinCos();
+    
+    sobel = mov;
+
+    oneComputationEveryXFrames = 1; // 0 stands for all frames
+    currFrame = 0;
+    
+    rotation = new PVector(0, 0, 0);
   }
 
-  void draw() {
-    if (cam.available() == true) {
-      cam.read();
-    }
-    img = cam.get();
-    image(img, 0, 0);
-    //compute sobel and hough
-    PImage sobel = computeSobel(img);
-    int[] hough = hough(sobel);
-    PImage accumulator = displayAccumulator(sobel, hough, 600);
-    ArrayList<PVector> lines = displayLines(sobel, hough, 180, 8);
 
-    //quad
-    quadgraph.build(lines, img.width, img.height);
-    List<int[]> quads = filterQuads(quadgraph.findCycles(), lines);
-    //if we have more than one quad just take the first
-    //with those images we always have only one quad except for the third image
-    if (quads.size() > 0) {
-      rotation = drawQuad(quads.get(0), lines);
+  public void display(PImage curr) {
+    /*
+    if (cam.available() == true) {
+     cam.read();
+     }
+     img = cam.get();
+     */
+
+    tmp = curr;
+    tmp.resize(640, 360);
+    
+    edges.image(tmp, 0, 0);
+    
+    // Here we perform the edge detection calculations only one time out of 
+    // oneComputationEveryXFrames frames to save cpu power
+    if (currFrame >= oneComputationEveryXFrames) {
+      //compute sobel and hough
+      sobel = computeSobel(tmp);
+      int[] hough = hough(sobel);
+      //PImage accumulator = displayAccumulator(sobel, hough, 600);
+      ArrayList<PVector> lines = displayLines(sobel, hough, 180, 6);
+
+      //quad
+      quadgraph.build(lines, tmp.width, tmp.height);
+      List<int[]> quads = filterQuads(quadgraph.findCycles(), lines);
+      
+      //if we have more than one quad just take the first
+      if (quads.size() > 0) {
+        rotation = drawQuad(quads.get(0), lines, true); //do not draw lines to save computational power
+      }
+
+      board.rotateX = rotation.x;
+      board.rotateZ = rotation.y;;
+      //println("\tX: " + rotatzon.x + " Z: " + rotation.z); 
+
+      currFrame = 0;
+    } else {
+      currFrame += 1;
     }
     
-    //image(accumulator, 800, 0);
-    //image(sobel, 1400, 0);
+    edges.image(sobel, 0, 480); 
   }
 
-  PImage computeSobel(PImage origImg) {
-    PImage tmpImg = thresholdHue(origImg, 50, 140);
-    tmpImg = thresholdBrightness(tmpImg, 30, 200);
-    tmpImg = thresholdSaturation(tmpImg, 90, 255);
+  private PImage computeSobel(PImage origImg) {
+    PImage tmpImg = thresholdHue(origImg, 50, 140);//50, 140
+    tmpImg = thresholdBrightness(tmpImg, 30, 200);//30, 200
+    tmpImg = thresholdSaturation(tmpImg, 90, 255);//90, 255
     tmpImg = gaussianBlur(tmpImg);
     tmpImg = thresholdBinary(tmpImg, 30, 200);
 
     //set area bounds, used to select quad
-    areaBounds(tmpImg);
+    //areaBounds(tmpImg);
 
     return sobel(tmpImg, 0.23);
   }
 
-  List<int[]> filterQuads(List<int[]> quads, ArrayList<PVector> lines) {
+  private List<int[]> filterQuads(List<int[]> quads, ArrayList<PVector> lines) {
     List<int[]> filteredQuads = new ArrayList<int[]>();
 
     for (int[] quad : quads) {
@@ -92,7 +111,7 @@ class EdgeDetection extends PApplet {
       PVector c41 = intersection(l4, l1);
 
       if (   quadgraph.isConvex(c12, c23, c34, c41) 
-        && quadgraph.validArea(c12, c23, c34, c41, areaUpperBound, areaLowerBound)
+        /*&& quadgraph.validArea(c12, c23, c34, c41, areaUpperBound, areaLowerBound)*/
         && quadgraph.nonFlatQuad(c12, c23, c34, c41)) {
         filteredQuads.add(quad);
       }
@@ -100,35 +119,34 @@ class EdgeDetection extends PApplet {
     return filteredQuads;
   }
 
-  PVector drawQuad(int[] quad, ArrayList<PVector> lines) {
+  private PVector drawQuad(int[] quad, ArrayList<PVector> lines, Boolean drawLin) {
     ArrayList<PVector> bestLines = new ArrayList<PVector>();
     for (int i = 0; i < 4; ++i) {
       bestLines.add(lines.get(quad[i]));
     }
-    drawLines(bestLines, img);
 
     List<PVector> intersections = new ArrayList<PVector>();
     for (int i = 0; i < 4; ++i) {
       intersections.add(intersection(lines.get(quad[i]), lines.get(quad[(i + 1) % 4])));
     }
 
-    // Draw intersections
-    fill(255, 128, 0);
-    for (PVector inter : intersections) {
-      ellipse(inter.x, inter.y, 10, 10);
+    if (drawLin) {
+      drawLines(bestLines, tmp);
+
+      // Draw intersections
+      edges.fill(255, 128, 0);
+      for (PVector inter : intersections) {
+        edges.ellipse(inter.x, inter.y, 10, 10);
+      }
     }
 
     // Compute rotation angles  
     PVector rot = projecter.get3DRotations(quadgraph.sortCorners(intersections));
-    /*
-    print("rot x: " + degrees(rot.x));
-    print("rot y: " + degrees(rot.y));
-    print("rot z: " + degrees(rot.z) + "\n");
-    */
+
     return rot;
   }
 
-  void drawLines(ArrayList<PVector> lines, PImage edgeImg) {
+  private void drawLines(ArrayList<PVector> lines, PImage edgeImg) {
     for (PVector l : lines) {
       float r = l.x;
       float phi = l.y;
@@ -143,21 +161,21 @@ class EdgeDetection extends PApplet {
       int x3 = (int) (-(y3 - r / sin(phi)) * (sin(phi) / cos(phi)));
 
       // Finally, plot the lines
-      stroke(204, 102, 0);
+      edges.stroke(204, 102, 0);
       if (y0 > 0) {
-        if (x1 > 0) line(x0, y0, x1, y1);
-        else if (y2 > 0) line(x0, y0, x2, y2);
-        else line(x0, y0, x3, y3);
+        if (x1 > 0) edges.line(x0, y0, x1, y1);
+        else if (y2 > 0) edges.line(x0, y0, x2, y2);
+        else edges.line(x0, y0, x3, y3);
       } else {
         if (x1 > 0) {
-          if (y2 > 0) line(x1, y1, x2, y2);
-          else line(x1, y1, x3, y3);
-        } else line(x2, y2, x3, y3);
+          if (y2 > 0) edges.line(x1, y1, x2, y2);
+          else edges.line(x1, y1, x3, y3);
+        } else edges.line(x2, y2, x3, y3);
       }
     }
   }
 
-  PVector intersection(PVector line1, PVector line2) {
+  private PVector intersection(PVector line1, PVector line2) {
     float d = cos(line2.y) * sin(line1.y) - cos(line1.y) * sin(line2.y);
     float x = (line2.x * sin(line1.y) - line1.x * sin(line2.y)) / d;
     float y = (-line2.x * cos(line1.y) + line1.x * cos(line2.y)) / d;
@@ -165,8 +183,7 @@ class EdgeDetection extends PApplet {
     return new PVector(x, y);
   }
 
-
-  void fillSinCos() {
+  private void fillSinCos() {
     float discretizationStepsPhi = 0.06f;
     float discretizationStepsR = 2.5f;
     int phiDim = (int) (Math.PI / discretizationStepsPhi);

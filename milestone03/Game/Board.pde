@@ -55,11 +55,6 @@ class Board {
     }
     prevMouseY = mouseY;
   }
-  
-  void moveWithWebcam(PVector rot) {
-    rotateX = rot.x;
-    rotateZ = rot.z;
-  }
 
   //change speed (min: 0.2, max: 1.5)
   void changeSpeed(MouseEvent e) {

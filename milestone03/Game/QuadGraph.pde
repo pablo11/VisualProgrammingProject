@@ -194,7 +194,7 @@ class QuadGraph {
     float i4 = v14.cross(v21).z;
 
     if ((i1 > 0 && i2 > 0 && i3 > 0 && i4 > 0) || (i1 < 0 && i2 < 0 && i3 < 0 && i4 < 0)) return true;
-    else System.out.println("Eliminating non-convex quad");
+    //else System.out.println("Eliminating non-convex quad");
     return false;
   }
 
@@ -211,10 +211,10 @@ class QuadGraph {
 
     float area = i1 + i2;
     
-    println("Area: " + area);
+    //println("Area: " + area);
 
     boolean valid = (area < max_area && area > min_area);
-    if (!valid) System.out.println("Area out of range");
+    //if (!valid) System.out.println("Area out of range");
 
     return valid;
   }
@@ -239,7 +239,7 @@ class QuadGraph {
     if (cos1 < min_cos && cos2 < min_cos && cos3 < min_cos && cos4 < min_cos)
       return true;
     else {
-      System.out.println("Flat quad");
+      //System.out.println("Flat quad");
       return false;
     }
   }

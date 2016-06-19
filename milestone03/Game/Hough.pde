@@ -33,7 +33,6 @@ int[] hough(PImage edgeImg) {
       if (brightness(edgeImg.pixels[y * edgeImg.width + x]) != 0) {
         for (int phi = 0; phi < phiDim; ++phi) {
           int r = (int) (x * tabCos[phi] + y * tabSin[phi]);
-          //int r = (int) ((x * cos(phi * discretizationStepsPhi) + y * sin(phi * discretizationStepsPhi)) / discretizationStepsR);
           r += (rDim - 1) / 2;
           accumulator[(phi + 1) * (rDim + 2) + r] += 1;
         }

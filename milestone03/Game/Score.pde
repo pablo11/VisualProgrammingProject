@@ -47,12 +47,12 @@ class Score {
     
     counter = 0;
     
-    scrollbar = new HScrollbar(topViewSize.x + scoreBoard.width + 3 * margin, barChart.height + 2 * margin, barChart.width, 10);
+    scrollbar = new HScrollbar(topViewSize.x + scoreBoard.width + 3 * margin, height - margin - 10, barChart.width, 10);
   }
 
   void display() {
     pushMatrix();
-    translate(-width / 2, height / 2 - backgroundSize.y + board.sizeY / 2, 0);
+    translate(0, height - backgroundSize.y, 0);
 
     //draw backgound
     createBackground();
@@ -70,8 +70,9 @@ class Score {
     createBarChart();
     image(barChart, topViewSize.x + scoreBoard.width + 3 * margin, margin); 
     
-    scrollbar.update();
+    translate(0, -height + backgroundSize.y, 0);
     scrollbar.display();
+    scrollbar.update();
     
     popMatrix();
   }

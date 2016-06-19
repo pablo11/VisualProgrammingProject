@@ -19,9 +19,9 @@ class PlayMode extends Mode {
     }
     popMatrix();
     
-    PVector rotation = edgeDetection.rotation;
+    //PVector rotation = edgeDetection.rotation;
     
-    board.moveWithWebcam(rotation);
+    //board.moveWithWebcam(rotation);
 
     score.recordPoints();
   }
