@@ -8,7 +8,8 @@ Movie mov;
 //webcam
 Capture cam;
 
-Boolean isWebcam = true;
+//set to true for webcam use, false for video
+Boolean isWebcam = false;
 
 PGraphics edges;
 
