@@ -54,7 +54,7 @@ class EdgeDetection {
     edges.image(tmp, 0, 0);
     
     // Here we perform the edge detection calculations only one time out of 
-    // oneComputationEveryXFrames frames to save cpu power
+    // oneComputationEveryXFrames + 1 frames to save cpu power
     if (currFrame >= oneComputationEveryXFrames) {
       //compute sobel and hough
       sobel = computeSobel(tmp);

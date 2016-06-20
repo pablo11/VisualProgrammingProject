@@ -1,7 +1,5 @@
 class Score {
-  private PVectorUInt backgroundSize;
-  private PVectorUInt topViewSize;
-  private PVectorUInt barChartSize;
+
   private int margin;
   public PGraphics background;
   private PGraphics topView;
@@ -14,7 +12,6 @@ class Score {
   float points;
 
   private int counter;
-  //maybe it's better to set only background size and define others in function of it
 
   HScrollbar scrollbar;
 
@@ -22,37 +19,23 @@ class Score {
     previousPoints = 0;
     points = 0;
 
-    backgroundSize = new PVectorUInt(width, 200);
     margin = 5;
+    
+    background = createGraphics(width, 200, P2D);
+    topView = createGraphics(200 - 2 * margin, 200 - 2 * margin, P2D);
+    scoreBoard = createGraphics(120, 200 - 2 * margin, P2D);
+    barChart = createGraphics(width - topView.width - scoreBoard.width - 4 * margin, 200 - 10 - 3 * margin, P2D);
 
-    //calculate size of topView
-    topViewSize = new PVectorUInt(0, 0);
-    if (board.sizeX >= board.sizeZ) {
-      topViewSize.x = backgroundSize.y - 2 * margin;
-      topViewSize.y = topViewSize.x * board.sizeZ / board.sizeX;
-    } else {
-      topViewSize.y = backgroundSize.y - 2 * margin;
-      topViewSize.x = topViewSize.y * board.sizeX / board.sizeZ;
-    }
-    
-    background = createGraphics(backgroundSize.x, backgroundSize.y, P2D);
-    topView = createGraphics(topViewSize.x, topViewSize.y, P2D);
-    scoreBoard = createGraphics(120, backgroundSize.y - 2 * margin, P2D);
-    
-    barChartSize = new PVectorUInt(backgroundSize.x - topViewSize.x - scoreBoard.width - 4 * margin, backgroundSize.y - 10 - 3 * margin);
-    
-    barChart = createGraphics(barChartSize.x, barChartSize.y, P2D);
-    
     pointsChart = new PointsChart(8);
-    
+
     counter = 0;
-    
-    scrollbar = new HScrollbar(topViewSize.x + scoreBoard.width + 3 * margin, height - margin - 10, barChart.width, 10);
+
+    scrollbar = new HScrollbar(topView.width + scoreBoard.width + 3 * margin, height - margin - 10, barChart.width, 10);
   }
 
   void display() {
     pushMatrix();
-    translate(0, height - backgroundSize.y, 0);
+    translate(0, height - background.height, 0);
 
     //draw backgound
     createBackground();
@@ -64,19 +47,19 @@ class Score {
 
     //draw scoreBoard
     createScoreBoard();
-    image(scoreBoard, topViewSize.x + 2 * margin, margin);
-    
+    image(scoreBoard, topView.width + 2 * margin, margin);
+
     //draw barChart
     createBarChart();
-    image(barChart, topViewSize.x + scoreBoard.width + 3 * margin, margin); 
-    
-    translate(0, -height + backgroundSize.y, 0);
+    image(barChart, topView.width + scoreBoard.width + 3 * margin, margin); 
+
+    translate(0, -height + background.height, 0);
     scrollbar.display();
     scrollbar.update();
-    
+
     popMatrix();
   }
-  
+
   private void createBackground() {
     background.beginDraw();
     background.background(0);
@@ -84,18 +67,18 @@ class Score {
   }
 
   private float mapFlatX(float toMap) {
-    return map(toMap, -board.sizeX/2, board.sizeX/2, 0, topViewSize.x);
+    return map(toMap, -board.sizeX/2, board.sizeX/2, 0, topView.width);
   }
-  
+
   private float mapFlatY(float toMap) {
-    return map(toMap, -board.sizeZ/2, board.sizeZ/2, 0, topViewSize.y);
+    return map(toMap, -board.sizeZ/2, board.sizeZ/2, 0, topView.height);
   }
-  
+
   private void createTopView() {
     //calculate ball and cylinders radius proportionally to the ones on the board
-    float ballDiameter = 2 * ball.radius * topViewSize.x / board.sizeX;
-    float cylinderDiameter = 2 * cylinder.radius * topViewSize.x / board.sizeX;
-    
+    float ballDiameter = 2 * ball.radius * topView.width / board.sizeX;
+    float cylinderDiameter = 2 * cylinder.radius * topView.width / board.sizeX;
+
     pushMatrix();
     topView.beginDraw();
     topView.background(board.colour);
@@ -117,7 +100,7 @@ class Score {
     pushMatrix();
     scoreBoard.beginDraw();
     scoreBoard.background(255);
-    translate(topViewSize.x + 2 * margin, margin);
+    translate(topView.width + 2 * margin, margin);
 
     scoreBoard.textSize(14);
     scoreBoard.fill(0);
@@ -138,16 +121,16 @@ class Score {
     previousPoints = points;
     points -= ball.velocity.mag();
   }
-  
+
   void recordPoints() {
     if (counter > 50) {
-     pointsChart.recordPoints();
-     counter = 0;
+      pointsChart.recordPoints();
+      counter = 0;
     } else {
       counter += 1;
     }
   }
-  
+
   void createBarChart() {
     barChart.beginDraw();
     barChart.background(255);
