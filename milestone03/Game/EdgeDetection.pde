@@ -15,20 +15,12 @@ class EdgeDetection {
   private PVector rotation;
 
   EdgeDetection() {
-    /*
-    String[] cameras = Capture.list();
-     if (cameras.length == 0) {
-     println("There are no cameras available for capture.");
-     exit();
-     } else {
-     cam = new Capture(this, cameras[0]);
-     cam.start();
-     }
-     img = cam.get();
-     */
-
     quadgraph = new QuadGraph();
-    projecter = new TwoDThreeD(mov.width, mov.height);
+    if (isWebcam) {
+      projecter = new TwoDThreeD(cam.get().width, cam.get().height);
+    } else {
+      projecter = new TwoDThreeD(mov.width, mov.height);
+    }
     fillSinCos();
     
     sobel = mov;
@@ -41,17 +33,11 @@ class EdgeDetection {
 
 
   public void display(PImage curr) {
-    /*
-    if (cam.available() == true) {
-     cam.read();
-     }
-     img = cam.get();
-     */
-
     tmp = curr;
-    tmp.resize(640, 360);
+    //tmp.resize(640, 480);
     
-    edges.image(tmp, 0, 0);
+    //edges.image(tmp, 0, 0);
+    edges.image(tmp, 0, 0, 320, 240);
     
     // Here we perform the edge detection calculations only one time out of 
     // oneComputationEveryXFrames + 1 frames to save cpu power
@@ -68,19 +54,19 @@ class EdgeDetection {
       
       //if we have more than one quad just take the first
       if (quads.size() > 0) {
-        rotation = drawQuad(quads.get(0), lines, true); //do not draw lines to save computational power
+        rotation = drawQuad(quads.get(0), lines, false); //do not draw lines to save computational power
       }
 
       board.rotateX = rotation.x;
-      board.rotateZ = rotation.y;;
-      //println("\tX: " + rotatzon.x + " Z: " + rotation.z); 
+      board.rotateZ = rotation.y;
+      //println(rotation.x + "   " + rotation.y);
 
       currFrame = 0;
     } else {
       currFrame += 1;
     }
     
-    edges.image(sobel, 0, 480); 
+    if (sobel != null) edges.image(sobel, 0, 240, 320, 240); 
   }
 
   private PImage computeSobel(PImage origImg) {
@@ -91,7 +77,7 @@ class EdgeDetection {
     tmpImg = thresholdBinary(tmpImg, 30, 200);
 
     //set area bounds, used to select quad
-    //areaBounds(tmpImg);
+    areaBounds(tmpImg);
 
     return sobel(tmpImg, 0.23);
   }
@@ -111,7 +97,7 @@ class EdgeDetection {
       PVector c41 = intersection(l4, l1);
 
       if (   quadgraph.isConvex(c12, c23, c34, c41) 
-        /*&& quadgraph.validArea(c12, c23, c34, c41, areaUpperBound, areaLowerBound)*/
+        && quadgraph.validArea(c12, c23, c34, c41, areaUpperBound, areaLowerBound)
         && quadgraph.nonFlatQuad(c12, c23, c34, c41)) {
         filteredQuads.add(quad);
       }

@@ -84,7 +84,7 @@ void areaBounds(PImage thresholdedImg) {
     }
   }
 
-  float tollerance = 0.05;
+  float tollerance = 0.3;
   areaUpperBound = boardPixels * (1 + tollerance);
   areaLowerBound = boardPixels * (1 - tollerance);
 }

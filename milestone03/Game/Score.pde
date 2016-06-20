@@ -1,35 +1,28 @@
 class Score {
-
-  private int margin;
   public PGraphics background;
   private PGraphics topView;
   private PGraphics scoreBoard;
   private PGraphics barChart;
-
-  PointsChart pointsChart; 
-
-  float previousPoints;
-  float points;
-
+  private HScrollbar scrollbar;
+  
+  private int margin;
   private int counter;
-
-  HScrollbar scrollbar;
+  
+  private PointsChart pointsChart; 
+  private float previousPoints;
+  private float points;
 
   Score() {
+    counter = 0;
+    margin = 5;
     previousPoints = 0;
     points = 0;
-
-    margin = 5;
+    pointsChart = new PointsChart(8);
     
     background = createGraphics(width, 200, P2D);
     topView = createGraphics(200 - 2 * margin, 200 - 2 * margin, P2D);
     scoreBoard = createGraphics(120, 200 - 2 * margin, P2D);
     barChart = createGraphics(width - topView.width - scoreBoard.width - 4 * margin, 200 - 10 - 3 * margin, P2D);
-
-    pointsChart = new PointsChart(8);
-
-    counter = 0;
-
     scrollbar = new HScrollbar(topView.width + scoreBoard.width + 3 * margin, height - margin - 10, barChart.width, 10);
   }
 
@@ -131,7 +124,7 @@ class Score {
     }
   }
 
-  void createBarChart() {
+  private void createBarChart() {
     barChart.beginDraw();
     barChart.background(255);
     pushMatrix();

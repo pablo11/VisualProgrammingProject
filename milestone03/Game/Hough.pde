@@ -116,9 +116,6 @@ ArrayList<PVector> displayLines(PImage edgeImg, int[] accumulator, int minVotes,
     lines.add(new PVector(r, phi));
   }
 
-  //draw best lines
-  //drawLines(lines, edgeImg);
-
   return lines;
 }
 

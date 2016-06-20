@@ -1,14 +1,14 @@
 import processing.video.*;
-/* EXTRA: plays sound when bouncing */
-/*
-import processing.sound.*;
- SoundFile sound;
- //*/
 
-//applets
 EdgeDetection edgeDetection;
 
+//video
 Movie mov;
+
+//webcam
+Capture cam;
+
+Boolean isWebcam = true;
 
 PGraphics edges;
 
@@ -28,25 +28,33 @@ EditMode cylinders;
 float gravityConstant;
 
 void settings() {
-  size(1000, 900, P3D);
+  size(1200, 900, P3D);
 }
 
 void setup() {
-  mov = new Movie(this, "testvideo.mp4");
-  mov.loop();
-  
+  //Webcam
+  if (isWebcam) {
+    String[] cameras = Capture.list();
+    if (cameras.length == 0) {
+      println("There are no cameras available for capture.");
+      exit();
+    } else {
+      cam = new Capture(this, cameras[0]);
+      cam.start();
+    }
+  } else { //video
+    mov = new Movie(this, "testvideo.mp4");
+    mov.loop();
+  }
+
   edgeDetection = new EdgeDetection();
-  edges = createGraphics(640, 2*480, P2D);
+  edges = createGraphics(320, 480, P2D);
 
   cylinders = new EditMode();
   play = new PlayMode();
   mode = play;
 
   gravityConstant = 1.1;
-  /* EXTRA */
-  /*
-  sound = new SoundFile(this, "boing.mp3");
-   //*/
 }
 
 void draw() {
@@ -57,14 +65,24 @@ void draw() {
   translate(width / 2, height / 2 - board.sizeY / 2, 0);
   mode.display();
   popMatrix();
-  
+
   score.display();
-  
+
   edges.beginDraw();
   edges.background(0);
-  edgeDetection.display(mov.get());
+
+  //for webcam
+  if (isWebcam) {
+    if (cam.available() == true) {
+      cam.read();
+    }
+    edgeDetection.display(cam.get());
+  } else { // video
+    edgeDetection.display(mov.get());
+  }
+
   edges.endDraw();
-  image(edges, width - 640, 0);
+  image(edges, width-edges.width, 0);
 }
 
 void mouseDragged() {

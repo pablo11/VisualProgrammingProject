@@ -3,12 +3,12 @@ class Board {
   int sizeY;
   int sizeZ;
   color colour;
-  
+
   //speed and rotation
   float rotateX;
   float rotateZ;
   float speed;
-  
+
   //previous mouse position
   float prevMouseX;
   float prevMouseY;
@@ -18,11 +18,11 @@ class Board {
     sizeY = boardSizeY;
     sizeZ = boardSizeZ;
     colour = color(0, 255, 0);
-    
+
     rotateX = 0;
     rotateZ = 0;
     speed = 1;
-    
+
     prevMouseX = mouseX;
     prevMouseY = mouseY;
   }
